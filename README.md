@@ -110,7 +110,7 @@ mcporter call orrery.calculate_saju year=2002 month=1 day=1 hour=12 minute=30 ge
 - 출력: 행성/하우스/앵글/애스펙트
 
 ## 크레딧
-
+- **사주 만세력 MCP** - 이걸 다시 MCP의 형태로 정지오가 wrapping(with Openclaw)
 - **사주 만세력** — 고영창님의 Perl [진짜만세력](http://afnmp3.homeip.net/~kohyc/calendar/cal20000.html)을 김정균님이 [PHP로 포팅](https://github.com/OOPS-ORG-PHP/Lunar)한 것을, 2018년 11월 황장호가 Java와 Python으로 포팅하여 사용해오다가, 2026년 2월 Claude Code (Opus 4.6)로 TypeScript로 포팅
 - **자미두수 명반** — [lunar-javascript](https://www.npmjs.com/package/lunar-javascript) 라이브러리 기반으로 Claude (Opus 4.5)가 중국어 문헌을 리서치하며 구현
 - **점성술 출생차트** — [Swiss Ephemeris](https://www.astro.com/swisseph/)의 Moshier 이론을 순수 TypeScript로 포팅
