@@ -21,14 +21,16 @@
 
 이 저장소는 `mcp-server.mjs`로 MCP stdio 서버 실행이 가능합니다.
 
-### 설치/빌드
+### 1) 설치
 
 ```bash
+git clone https://github.com/ziozzang/orrery-mcp.git
+cd orrery-mcp
 npm install
 npm run build:core
 ```
 
-### 자체 테스트
+### 2) 자체 테스트
 
 ```bash
 npm run mcp:self-test
@@ -38,17 +40,74 @@ npm run mcp:self-test
 - `2002-01-01 12:30`
 - 서울 (`lat=37.5665`, `lon=126.9780`)
 
-### mcporter 테스트
+### 3) MCP 서버 직접 실행 (stdio)
 
 ```bash
-mcporter call --stdio "node /ABS/PATH/orrery-mcp/mcp-server.mjs" \
-  calculate_saju year=2002 month=1 day=1 hour=12 minute=30 gender=M latitude=37.5665 longitude=126.9780 --output json
+node mcp-server.mjs
 ```
 
-도구:
-- `calculate_saju`
-- `calculate_ziwei`
-- `calculate_natal`
+### 4) mcporter로 도구 확인/호출
+
+```bash
+# 스키마 확인
+mcporter call --stdio "node /ABS/PATH/orrery-mcp/mcp-server.mjs" tools/list --output json
+
+# 사주
+mcporter call --stdio "node /ABS/PATH/orrery-mcp/mcp-server.mjs" \
+  calculate_saju year=2002 month=1 day=1 hour=12 minute=30 gender=M latitude=37.5665 longitude=126.9780 --output json
+
+# 자미두수
+mcporter call --stdio "node /ABS/PATH/orrery-mcp/mcp-server.mjs" \
+  calculate_ziwei year=2002 month=1 day=1 hour=12 minute=30 gender=M latitude=37.5665 longitude=126.9780 --output json
+
+# 서양점성
+mcporter call --stdio "node /ABS/PATH/orrery-mcp/mcp-server.mjs" \
+  calculate_natal year=2002 month=1 day=1 hour=12 minute=30 gender=M latitude=37.5665 longitude=126.9780 --output json
+```
+
+### 5) OpenClaw / mcporter 설정 예시
+
+`config/mcporter.json` 또는 사용하는 mcporter 설정 파일에 아래 서버 추가:
+
+```json
+{
+  "servers": {
+    "orrery": {
+      "command": "node",
+      "args": ["/ABS/PATH/orrery-mcp/mcp-server.mjs"],
+      "transport": "stdio"
+    }
+  }
+}
+```
+
+그 후:
+
+```bash
+mcporter list orrery --schema
+mcporter call orrery.calculate_saju year=2002 month=1 day=1 hour=12 minute=30 gender=M
+```
+
+### MCP 도구 목록
+
+#### `calculate_saju`
+- 설명: 사주(四柱八字) 계산
+- 입력:
+  - `year`(int), `month`(1-12), `day`(1-31)
+  - `hour`(0-23), `minute`(0-59, 기본 0)
+  - `gender`(`M`/`F`, 기본 `M`)
+  - `latitude`/`longitude`(선택)
+- 출력: 4주, 십신/운성, 대운, 관계, 신살, 좌법/인종법 등
+
+#### `calculate_ziwei`
+- 설명: 자미두수 명반 계산
+- 입력: `calculate_saju`와 동일
+- 출력: 연주/명궁/신궁, 오행국, 12궁/성요 구조
+
+#### `calculate_natal`
+- 설명: 서양 점성 출생차트 계산
+- 입력: `calculate_saju`와 동일
+- 출력: 행성/하우스/앵글/애스펙트
 
 ## 크레딧
 
