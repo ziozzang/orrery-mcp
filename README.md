@@ -5,7 +5,7 @@
 - Original Code: https://github.com/rath/orrery
 - Wrapper for AI (MCP)
 
-# Original README
+# README
 
 
 <div align="center">
@@ -13,7 +13,7 @@
   <h1>Orrery — 혼천의(渾天儀)</h1>
 </div>
 
-브라우저 기반 명리학 도구. 사주팔자(四柱八字), 자미두수(紫微斗數), 서양 점성술 출생차트(Natal Chart)를 백엔드 없이 클라이언트에서 계산합니다.
+브라우저 기반 명리학 도구를 MCP도 지원가능하도록 수정. 사주팔자(四柱八字), 자미두수(紫微斗數), 서양 점성술 출생차트(Natal Chart)를 백엔드 없이 클라이언트에서 계산합니다.
 
 **[라이브 데모 →](https://rath.github.io/orrery/)**
 
@@ -22,6 +22,15 @@
 이 저장소는 `mcp-server.mjs`로 MCP stdio 서버 실행이 가능합니다.
 
 ### 1) 설치
+
+* OpenClaw 의 경우는 다음과 같이 하면 됩니다.
+
+```
+
+https://github.com/ziozzang/orrery-mcp  설치 해서. 19xx년 x월 xx일 xx시 xx분, 서울 기준 출생 (남자)으로 해서  메모리에 저장해두고, 그 사주를 기준으로 뽑아서 2026년 해석해줘.
+```
+
+* 만일 MCP를 다른 cli 도구들에 설치 하거나 할떄는 아래 명령을 써야 할수 있습니다. (환경 따라 다름)
 
 ```bash
 git clone https://github.com/ziozzang/orrery-mcp.git
