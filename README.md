@@ -17,6 +17,39 @@
 
 **[라이브 데모 →](https://rath.github.io/orrery/)**
 
+## MCP 서버 래핑
+
+이 저장소는 `mcp-server.mjs`로 MCP stdio 서버 실행이 가능합니다.
+
+### 설치/빌드
+
+```bash
+npm install
+npm run build:core
+```
+
+### 자체 테스트
+
+```bash
+npm run mcp:self-test
+```
+
+기본 테스트 입력:
+- `2002-01-01 12:30`
+- 서울 (`lat=37.5665`, `lon=126.9780`)
+
+### mcporter 테스트
+
+```bash
+mcporter call --stdio "node /ABS/PATH/orrery-mcp/mcp-server.mjs" \
+  calculate_saju year=2002 month=1 day=1 hour=12 minute=30 gender=M latitude=37.5665 longitude=126.9780 --output json
+```
+
+도구:
+- `calculate_saju`
+- `calculate_ziwei`
+- `calculate_natal`
+
 ## 크레딧
 
 - **사주 만세력** — 고영창님의 Perl [진짜만세력](http://afnmp3.homeip.net/~kohyc/calendar/cal20000.html)을 김정균님이 [PHP로 포팅](https://github.com/OOPS-ORG-PHP/Lunar)한 것을, 2018년 11월 황장호가 Java와 Python으로 포팅하여 사용해오다가, 2026년 2월 Claude Code (Opus 4.6)로 TypeScript로 포팅

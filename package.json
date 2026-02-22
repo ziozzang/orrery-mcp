@@ -10,14 +10,18 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:core": "npm run -w @orrery/core build",
+    "mcp:self-test": "npm run build:core && node mcp-server.mjs --self-test",
     "lint": "eslint .",
     "preview": "vite preview",
     "generate-icons": "bun scripts/generate-icons.ts",
     "generate-og-image": "bun scripts/generate-og-image.ts"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.5",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
