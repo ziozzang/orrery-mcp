@@ -1,3 +1,13 @@
+
+
+# MCP Wrapper for Rath/Orrery
+
+- Original Code: https://github.com/rath/orrery
+- Wrapper for AI (MCP)
+
+# Original README
+
+
 <div align="center">
   <img src="src/assets/icon-512.png" alt="Orrery" width="256" />
   <h1>Orrery — 혼천의(渾天儀)</h1>
