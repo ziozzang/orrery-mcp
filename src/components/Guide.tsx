@@ -1,71 +1,65 @@
-function ExampleBox({ children }: { children: React.ReactNode }) {
+import { Fragment } from 'react'
+import CopyButton from './CopyButton.tsx'
+import { useLocale } from '../i18n/index.ts'
+
+/** 문구 속 {이름} 자리에 굵은 글씨로 버튼 이름을 넣는다. */
+function withNames(template: string, names: Record<string, string>): React.ReactNode {
+  return template.split(/(\{\w+\})/).map((part, i) => {
+    const name = /^\{(\w+)\}$/.exec(part)?.[1]
+    if (!name || !(name in names)) return <Fragment key={i}>{part}</Fragment>
+    return <strong key={i} className="font-semibold text-fg">{names[name]}</strong>
+  })
+}
+
+function Example({ title, prompt, children }: { title: string; prompt: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white/60 rounded border border-dashed border-gray-200 px-3 py-2 text-xs text-gray-500 leading-relaxed">
-      {children}
+    <div>
+      <div className="flex items-center justify-between gap-3">
+        <h4 className="text-sm font-semibold text-fg">{title}</h4>
+        <CopyButton variant="ghost" getText={() => prompt} />
+      </div>
+      <div className="mt-1 rounded-md bg-sunken px-3.5 py-3 text-base leading-relaxed text-fg-2">
+        <p>{prompt}</p>
+        {children}
+      </div>
     </div>
   )
 }
 
 export default function Guide() {
+  const { t } = useLocale()
+  const steps = [
+    t('guide.step1'),
+    t('guide.step2'),
+    withNames(t('guide.step3'), { copyAll: t('app.copyAll'), copy: t('copy.aiCopy') }),
+    t('guide.step4'),
+  ]
+
   return (
-    <div className="mt-8">
-      <section className="rounded-lg border border-dashed border-gray-300 p-5 bg-gray-50/50">
-        <h3 className="text-sm font-medium text-gray-400 mb-3 flex items-center gap-1.5">
-          <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.94 6.94a.75.75 0 11-1.061-1.061 3 3 0 112.871 5.026v.345a.75.75 0 01-1.5 0v-.5c0-.72.57-1.172 1.081-1.287A1.5 1.5 0 108.94 6.94zM10 15a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-          </svg>
-          사용 방법
-        </h3>
-        <ol className="text-sm text-gray-500 space-y-2 list-none pl-0">
-          <li className="flex gap-2">
-            <span className="shrink-0 text-gray-400">1.</span>
-            <span>위 폼에 생년월일, 태어난 시간, 성별을 입력합니다.</span>
+    <section className="mt-10 border-t border-line pt-8">
+      <h2 className="text-lg font-semibold text-fg">{t('guide.title')}</h2>
+      <ol className="mt-3 max-w-[65ch] space-y-2 text-base leading-relaxed text-fg-2">
+        {steps.map((step, i) => (
+          <li key={i} className="flex gap-3">
+            <span className="w-4 shrink-0 text-right font-medium text-muted tabular-nums">{i + 1}</span>
+            <span>{step}</span>
           </li>
-          <li className="flex gap-2">
-            <span className="shrink-0 text-gray-400">2.</span>
-            <span><strong className="text-gray-600">계산</strong> 버튼을 누르면 사주팔자, 자미두수, 출생차트 결과가 나타납니다.</span>
-          </li>
-          <li className="flex gap-2">
-            <span className="shrink-0 text-gray-400">3.</span>
-            <span>
-              탭 우측의 <strong className="text-gray-600">AI 해석용 전부 복사</strong>를 누르면 사주팔자 + 자미두수 + 출생차트 데이터가 한 번에 복사됩니다.
-              각 탭의 <strong className="text-gray-600">AI 해석용 복사</strong> 버튼으로 개별 복사도 가능합니다.
-            </span>
-          </li>
-          <li className="flex gap-2">
-            <span className="shrink-0 text-gray-400">4.</span>
-            <span>Claude, ChatGPT, Gemini 등 AI 채팅에 붙여넣고 해석을 요청하세요.</span>
-          </li>
-        </ol>
+        ))}
+      </ol>
 
-        <hr className="my-4 border-gray-200" />
-
-        <h4 className="text-xs font-medium text-gray-400 mb-3">AI에게 이렇게 물어보세요</h4>
-        <div className="space-y-3">
-          <div>
-            <p className="text-xs font-medium text-gray-400 mb-1">성격 분석</p>
-            <ExampleBox>
-              다음은 내 사주팔자, 자미두수 명반, 출생차트야. 성격적 강점과 약점을 분석해줘.<br />
-              <span className="text-gray-400">[복사한 데이터 붙여넣기]</span>
-            </ExampleBox>
-          </div>
-          <div>
-            <p className="text-xs font-medium text-gray-400 mb-1">고민 상담</p>
-            <ExampleBox>
-              아래 명반 데이터를 기반으로, 내가 살면서 힘들 수 있는 부분 Top 3를 뽑고 조언해줘.<br />
-              <span className="text-gray-400">[복사한 데이터 붙여넣기]</span>
-            </ExampleBox>
-          </div>
-          <div>
-            <p className="text-xs font-medium text-gray-400 mb-1">궁합 보기</p>
-            <ExampleBox>
-              두 사람의 명반 데이터를 보내줄게. 성격적으로 잘 맞는 부분과 부딪힐 수 있는 부분을 분석해줘.<br /><br />
-              <span className="text-gray-400">[A의 데이터 붙여넣기]</span><br /><br />
-              <span className="text-gray-400">[B의 데이터 붙여넣기]</span>
-            </ExampleBox>
-          </div>
-        </div>
-      </section>
-    </div>
+      <h3 className="mt-8 text-base font-semibold text-fg">{t('guide.askAI')}</h3>
+      <div className="mt-3 grid max-w-[65ch] gap-5">
+        <Example title={t('guide.personality')} prompt={t('guide.personalityEx')}>
+          <p className="mt-1 text-muted">{t('guide.pasteData')}</p>
+        </Example>
+        <Example title={t('guide.counseling')} prompt={t('guide.counselingEx')}>
+          <p className="mt-1 text-muted">{t('guide.pasteData')}</p>
+        </Example>
+        <Example title={t('guide.compatibility')} prompt={t('guide.compatibilityEx')}>
+          <p className="mt-1 text-muted">{t('guide.pasteA')}</p>
+          <p className="text-muted">{t('guide.pasteB')}</p>
+        </Example>
+      </div>
+    </section>
   )
 }

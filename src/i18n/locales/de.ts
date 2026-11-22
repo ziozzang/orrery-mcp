@@ -1,0 +1,250 @@
+const de: Record<string, string> = {
+  // App
+  'app.loading': 'Wird geladen…',
+  'app.subtitle.tool': 'Saju · Zi Wei Dou Shu · Geburtshoroskop',
+  'app.lead': 'Geben Sie Geburtsdatum, Uhrzeit und Geburtsort ein: Saju, Zi Wei Dou Shu und das Geburtshoroskop werden direkt in Ihrem Browser berechnet. Das Ergebnis lässt sich als Text kopieren und von einer KI deuten.',
+  'app.tab.saju': 'Saju (四柱八字)',
+  'app.tab.ziwei': 'Zi Wei Dou Shu (紫微斗数)',
+  'app.tab.natal': 'Geburtshoroskop',
+  'app.copyAll': 'Alles für KI-Deutung kopieren',
+  'app.intro': 'Info',
+
+  // BirthForm
+  'form.title': 'Geburtsdaten',
+  'form.titleEdit': 'Profil bearbeiten',
+  'form.name': 'Name',
+  'form.optional': '(optional)',
+  'form.nameHint': 'Mit einem Namen wird die Eingabe als Profil gespeichert und lässt sich später wieder öffnen.',
+  'form.nameRequired': 'Bitte einen Namen eingeben.',
+  'form.gender': 'Geschlecht',
+  'form.birthDate': 'Geburtsdatum (Sonnenkalender)',
+  'form.year': 'Jahr',
+  'form.month': 'Monat',
+  'form.day': 'Tag',
+  'form.dateRequired': 'Bitte das Geburtsdatum eingeben.',
+  'form.yearRange': 'Bitte ein Jahr von {min} bis {max} eingeben.',
+  'form.daySuffix': '',
+  'form.kdt': 'Dieser Zeitraum fällt in die Sommerzeit der Olympischen Spiele 1988 (KDT, UTC+10). Alle Berechnungen werden automatisch angepasst.',
+  'form.kstHistoricalOffset': 'Dieses Datum fällt in eine historische Zeitzonenabweichung Koreas (1948–1951 KDT, 1954–1961 UTC+8:30/+9:30, 1987–1988 KDT). Alle Berechnungen werden automatisch auf die KST-Uhrzeit normalisiert.',
+  'form.dstGapError': 'Die eingegebene Zeit liegt in der Lücke der Sommerzeitumstellung und existiert nicht. Bitte prüfen Sie die Zeitzone des Geburtseintrags.',
+  'form.time': 'Geburtszeit',
+  'form.hour': 'Stunde',
+  'form.minute': 'Minute',
+  'form.timeRequired': 'Bitte die Geburtszeit wählen oder „Unbekannt“ ankreuzen.',
+  'form.unknown': 'Unbekannt',
+  'form.hourSuffix': '',
+  'form.minuteSuffix': '',
+  'form.male': 'Männlich',
+  'form.female': 'Weiblich',
+  'form.genderRequired': 'Bitte ein Geschlecht wählen.',
+  'form.birthPlace': 'Geburtsort',
+  'form.placeRequired': 'Bitte die Geburtsstadt wählen.',
+  'form.citySearch': 'Stadt',
+  'form.coordInput': 'Koordinaten',
+  'form.latitude': 'Breitengrad',
+  'form.longitude': 'Längengrad',
+  'form.coordinateInvalid': 'Bitte gültige numerische Koordinaten eingeben.',
+  'form.invalidDate': 'Bitte ein gültiges Kalenderdatum und eine gültige Uhrzeit eingeben.',
+  'form.timezoneDefault': 'Ermittelte Zeitzone:',
+  'form.timezoneAutoDetectFailed': 'Aus den aktuellen Koordinaten konnte keine Zeitzone ermittelt werden. Bitte prüfen Sie die Koordinaten.',
+  'form.dstActive': 'Sommerzeit (DST) aktiv',
+  'form.advanced': 'Erweiterte Einstellungen',
+  'form.jasiMethod': 'Ja-si-Methode (子時法)',
+  'form.unified': 'Einheitliches Ja-si',
+  'form.split': 'Geteiltes Ja-si (Nacht)',
+  'form.unifiedDesc': 'Ab 23:30 gilt die 子-Stunde, und die Tagessäule wechselt auf den nächsten Tag.',
+  'form.splitDesc': '23:30–00:00 (Nacht-Ja-si) ist die 子-Stunde, die Tagessäule bleibt jedoch beim aktuellen Tag.',
+  'form.calculate': 'Berechnen',
+  'form.saveAndCalculate': 'Speichern und berechnen',
+  'form.privacy1': 'Alle Berechnungen erfolgen in Ihrem Browser.',
+  'form.privacy2': 'Ihre Daten werden an keinen Server gesendet.',
+
+  // SubjectHeader
+  'subject.unsaved': 'Nicht gespeichertes Horoskop',
+  'subject.edit': 'Bearbeiten',
+
+  // CopyButton
+  'copy.failed': 'Kopieren fehlgeschlagen · Erneut versuchen',
+  'copy.copy': 'Kopieren',
+  'copy.copied': 'Kopiert ✓',
+  'copy.aiCopy': 'Für KI-Deutung kopieren',
+
+  // AI text export
+  'export.timeKst': 'Zeitbasis: auf KST (UTC+09:00) normierte Uhrzeit; historische Zeitversätze und Sommerzeit korrigiert',
+  'export.timeSolar': 'Zeitbasis: IANA-Ortszeit → UTC → wahre Sonnenzeit aus Längengrad und Zeitgleichung',
+  'export.timeUnspecified': 'Zeitbasis: ursprüngliche Zeitzone nicht angegeben',
+  'export.sajuCalendar': 'Berechnungsbasis: 年柱 wechselt zu 立春; 月柱 zum astronomischen Eintritt des Sonnentermins',
+  'export.sajuUnified': '子時法: vereinheitlicht — 子時 beginnt um {start}; 日柱 wechselt zum nächsten Tag',
+  'export.sajuSplit': '子時法: geteilt — 子時 beginnt um {start}; vor 00:00 bleibt 日柱 am selben Tag, 時干 nutzt den nächsten Tag',
+  'export.sajuAge': 'Angezeigtes 大運-Alter: Startjahr − korrigiertes Geburtsjahr (nicht nach Geburtstag berechnet)',
+  'export.ziweiCalendar': 'Berechnungsbasis: Mondkalender (lunar-javascript); 年柱 und 流年 wechseln zum Mondneujahr',
+  'export.ziweiTime': '子時: 23:00–01:00; um 23:00 der korrigierten Uhrzeit bleibt das Monddatum am selben Tag',
+  'export.ziweiLeap': '閏月: wie der entsprechende reguläre Monat behandelt (keine Teilung in Monatshälften)',
+  'export.ziweiAge': '大限 / 流年-Alter: Zählalter = Bezugsjahr im Mondkalender − Geburtsjahr im Mondkalender + 1',
+  'export.ziweiFlowYear': 'Zeitraum: Mondneujahr des angegebenen Jahres bis zum Tag vor dem nächsten Mondneujahr',
+  'export.ziweiMonths': '流月 (Mondmonate 1–12 · Übersicht der 命宮-Position nach 斗君)',
+  'export.natalBasis': 'Berechnungsbasis: tropischer Tierkreis · geozentrische Positionen · mittlerer Mondknoten',
+  'export.natalTime': 'Zeitbasis: IANA-Ortszeit → UTC (historische Zeitversätze und Sommerzeit berücksichtigt)',
+  'export.natalHouses': 'Häuser: {system}; Beginn an der Hausspitze inklusive, nächste Hausspitze exklusive',
+
+  // ThemeToggle
+  'theme.system': 'Systemeinstellung',
+  'theme.light': 'Heller Modus',
+  'theme.dark': 'Dunkler Modus',
+
+  // LanguageMenu
+  'lang.select': 'Sprache wählen',
+
+  // Date formats ({m} = month, {d} = day)
+  'date.monthDay': '{d}.{m}.',
+
+  // CityCombobox
+  'city.noResults': 'Keine Ergebnisse',
+  'city.korea': 'Korea',
+  'city.world': 'Welt',
+  'city.placeholder': 'Stadtnamen eingeben',
+
+  // Guide
+  'guide.title': 'Anleitung',
+  'guide.step1': 'Geben Sie Geburtsdatum, Geburtszeit, Geschlecht und Geburtsort ein und berechnen Sie.',
+  'guide.step2': 'Lesen Sie die Ergebnisse in den Tabs Saju, Zi Wei Dou Shu und Geburtshoroskop.',
+  'guide.step3': 'Mit {copyAll} kopieren Sie alle drei auf einmal. Mit {copy} in jedem Tab kopieren Sie eines davon.',
+  'guide.step4': 'Fügen Sie den Text in einen KI-Chat wie Claude, ChatGPT oder Gemini ein und bitten Sie um eine Deutung.',
+  'guide.askAI': 'So können Sie die KI fragen',
+  'guide.personality': 'Persönlichkeitsanalyse',
+  'guide.personalityEx': 'Hier sind mein Saju, mein Zi-Wei-Dou-Shu-Horoskop und mein Geburtshoroskop. Bitte analysiere die Stärken und Schwächen meiner Persönlichkeit.',
+  'guide.pasteData': '[Kopierte Daten hier einfügen]',
+  'guide.counseling': 'Lebensberatung',
+  'guide.counselingEx': 'Nenne mir anhand der folgenden Horoskopdaten die drei größten Herausforderungen in meinem Leben und gib mir Rat.',
+  'guide.compatibility': 'Partnerschaftsanalyse',
+  'guide.compatibilityEx': 'Ich sende die Horoskopdaten von zwei Personen. Bitte analysiere die harmonischen Aspekte und mögliche Konfliktbereiche.',
+  'guide.pasteA': '[Daten von A hier einfügen]',
+  'guide.pasteB': '[Daten von B hier einfügen]',
+
+  // ProfileModal
+  'profile.timeUnknown': 'Zeit unbekannt',
+  'profile.male': 'M',
+  'profile.female': 'W',
+  'profile.ilju': 'Tagessäule',
+  'profile.listTitle': 'Profile',
+  'profile.reorder': 'Position von {name} ändern',
+  'profile.moveUp': 'Nach oben',
+  'profile.moveDown': 'Nach unten',
+  'profile.moved': '{name} steht jetzt an Position {n} in der Liste.',
+  'profile.new': 'Neu',
+  'profile.search': 'Nach Namen suchen',
+  'profile.searchEmpty': 'Kein Profil mit diesem Namen.',
+  'profile.emptyHint': 'Noch keine gespeicherten Profile. Speichern Sie eine Eingabe mit einem Namen, dann erscheint sie hier.',
+  'profile.storageNote': 'Profile werden nur in diesem Browser gespeichert. Mit Exportieren erstellen Sie eine Sicherung.',
+  'profile.close': 'Schließen',
+  'profile.export': 'Exportieren',
+  'profile.import': 'Importieren',
+  'profile.imported': 'Importierte Profile: {n}',
+  'profile.importedNone': 'Keine neuen Profile zum Importieren.',
+  'profile.namePlaceholder': 'Spitznamen eingeben',
+  'profile.save': 'Speichern',
+  'profile.cancel': 'Abbrechen',
+  'profile.delete': 'Profil löschen',
+  'profile.deleteConfirm': 'Dieses Profil löschen?',
+  'profile.deleteYes': 'Löschen',
+  'profile.storageError': 'Der Speicher ist voll. Bitte nicht benötigte Profile löschen.',
+  'profile.importError': 'Die Datei konnte nicht gelesen werden. Bitte prüfen Sie, ob es sich um eine gültige JSON-Datei handelt.',
+
+  // Saju - PillarTable
+  'saju.sipsin': '十神',
+  'saju.cheongan': '天干',
+  'saju.jiji': '地支',
+  'saju.unseong': '運星',
+  'saju.sinsal': '神殺',
+  'saju.janggan': '藏干',
+  'saju.gongmang': '空亡',
+
+  // Saju - DaewoonTable
+  'saju.noData': 'Keine Daten zu den großen Zyklen (大運) vorhanden.',
+  'saju.daewoonHint': 'Wählen Sie eine Glücksperiode, um darunter ihre Jahre zu sehen.',
+  'saju.unknownTimeWarning': 'Ohne Geburtszeit auf Basis von 12:00 Uhr berechnet. Der Beginn der großen Zyklen kann um mehrere Monate abweichen.',
+  'saju.ageSuffix': '',
+
+  // Saju - SinsalList
+  'saju.sal.cheonul': 'Himmlischer Edler (天乙貴人)',
+  'saju.sal.cheonduk': 'Himmlische Tugend (天德貴人)',
+  'saju.sal.wolduk': 'Monatstugend (月德貴人)',
+  'saju.sal.munchang': 'Stern der Gelehrsamkeit (文昌貴人)',
+  'saju.sal.geumyeo': 'Goldene Kutsche (金輿祿)',
+  'saju.sal.yangin': 'Klingenstern (羊刃殺)',
+  'saju.sal.dohwa': 'Pfirsichblüte (桃花殺)',
+  'saju.sal.baekho': 'Weißer Tiger (白虎殺)',
+  'saju.sal.goegang': 'Anführerstern (魁罡殺)',
+  'saju.sal.hongyeom': 'Rote Schönheit (紅艶殺)',
+
+  // Saju - TransitView
+  'saju.transit.past': 'Vergangenheit',
+  'saju.transit.future': 'Bevorstehend',
+  'saju.transit.futureBtn': 'Zukunft',
+  'saju.transit.pastBtn': 'Vergangenheit',
+  'saju.transit.1month': '1 Monat',
+  'saju.transit.3months': '3 Monate',
+  'saju.transit.6months': '6 Monate',
+  'saju.transit.noRelation': ' Monate ohne nennenswerte Wechselwirkungen',
+
+  // Saju - Transit relation prefix
+  'transit.stem': '天干',
+  'transit.branch': '地支',
+
+  // Saju - JwabeopChart
+  'saju.jwabeop.desc': 'Auf welchem Zyklusstern die verborgenen Stämme jeder Säule im Tageszweig sitzen (坐)',
+
+  // Saju - InjongbeopChart
+  'saju.injong.jijanggan': 'Verborgene Stämme',
+  'saju.injong.desc': '— Yang-Stamm-Aussaat für fehlende Zehn Götter',
+
+  // Ziwei
+  'ziwei.lunarYear': '流年 (Mondjahr)',
+  'ziwei.needTime': 'Zi Wei Dou Shu benötigt die Geburtszeit.',
+  'ziwei.needTimeDesc': 'Die gesamte Struktur des Horoskops hängt von der Geburtszeit ab. Bitte geben Sie Ihre Geburtszeit ein.',
+
+  // Natal
+  'natal.houseSystemFallback': 'Das gewählte Häusersystem ist hier nicht berechenbar. Angezeigt wird {system}.',
+  'natal.loading': 'Geburtshoroskop wird berechnet...',
+  'natal.error': 'Berechnungsfehler',
+  'natal.unknownTime': 'Ohne Geburtszeit auf Basis von 12:00 Uhr berechnet.',
+  'natal.unknownTimeDetail': 'Der Mond kann bis zu ±6° abweichen; AC und Häuserstellungen werden nicht angezeigt.',
+  'natal.planet': 'Planet',
+  'natal.sign': 'Zeichen',
+  'natal.degree': 'Grad',
+  'natal.house': 'Haus',
+  'natal.planets': 'Planeten',
+  'natal.angles': 'Achsen',
+  'natal.houses': 'Häuser',
+  'natal.aspects': 'Hauptaspekte',
+  'natal.houseSystem': 'Häusersystem',
+  'natal.wheelDescription': 'Der äußere Ring zeigt Tierkreiszeichen und Grade, der nummerierte Ring die Häuser. R steht für Rückläufigkeit. Die Linien in der Mitte verbinden Planeten, die einen Aspekt bilden.',
+  'natal.aspectKey': 'Aspekte nach Typ anzeigen',
+  'natal.retrograde': 'Rückläufig',
+  'natal.enlargeWheel': 'Horoskop vergrößern',
+  'natal.fitWheel': 'An Bildschirm anpassen',
+
+  'aspect.conjunction': 'Konjunktion',
+  'aspect.sextile': 'Sextil',
+  'aspect.square': 'Quadrat',
+  'aspect.trine': 'Trigon',
+  'aspect.opposition': 'Opposition',
+
+  // Natal - Planets
+  'planet.Sun': 'Sonne', 'planet.Moon': 'Mond', 'planet.Mercury': 'Merkur', 'planet.Venus': 'Venus',
+  'planet.Mars': 'Mars', 'planet.Jupiter': 'Jupiter', 'planet.Saturn': 'Saturn', 'planet.Uranus': 'Uranus',
+  'planet.Neptune': 'Neptun', 'planet.Pluto': 'Pluto', 'planet.Chiron': 'Chiron',
+  'planet.NorthNode': 'Nördlicher Mondknoten', 'planet.SouthNode': 'Südlicher Mondknoten', 'planet.Fortuna': 'Glückspunkt',
+
+  // Natal - Zodiac Signs
+  'zodiac.Aries': 'Widder', 'zodiac.Taurus': 'Stier', 'zodiac.Gemini': 'Zwillinge', 'zodiac.Cancer': 'Krebs',
+  'zodiac.Leo': 'Löwe', 'zodiac.Virgo': 'Jungfrau', 'zodiac.Libra': 'Waage', 'zodiac.Scorpio': 'Skorpion',
+  'zodiac.Sagittarius': 'Schütze', 'zodiac.Capricorn': 'Steinbock', 'zodiac.Aquarius': 'Wassermann', 'zodiac.Pisces': 'Fische',
+
+  // Natal - Zodiac Signs (short, for mobile)
+  'zodiac.short.Aries': 'Wid', 'zodiac.short.Taurus': 'Sti', 'zodiac.short.Gemini': 'Zwi', 'zodiac.short.Cancer': 'Kre',
+  'zodiac.short.Leo': 'Löw', 'zodiac.short.Virgo': 'Jun', 'zodiac.short.Libra': 'Waa', 'zodiac.short.Scorpio': 'Sko',
+  'zodiac.short.Sagittarius': 'Sch', 'zodiac.short.Capricorn': 'Ste', 'zodiac.short.Aquarius': 'Was', 'zodiac.short.Pisces': 'Fis',
+}
+
+export default de

@@ -7,8 +7,17 @@ export type YinYang = '+' | '-';
 /** 성별 */
 export type Gender = 'M' | 'F';
 
+/** 자시법 (子時法) — 23:00~01:00 구간 일주 처리 방식 */
+export type JasiMethod = 'split' | 'unified';
+// 'split'   = 야자시 인정: 23:00~24:00 일주 당일 유지
+// 'unified' = 통자시: 23:00부터 일주 다음날로 넘김
+
 /** 생년월일시 입력 */
 export interface BirthInput {
+  /**
+   * Gregorian year, 1–9999. `calculateNatal()` is limited to the ephemeris range
+   * (years 1–3000 UT) and includes Chiron only for the years 1900–2099 UT.
+   */
   year: number;
   month: number;
   day: number;
@@ -17,10 +26,20 @@ export interface BirthInput {
   gender: Gender;
   /** 시간 모름 여부 */
   unknownTime?: boolean;
+  /** 자시법 (기본값: 'unified' 통자시) */
+  jasiMethod?: JasiMethod;
   /** 위도 (기본값: 37.5194 서울) */
   latitude?: number;
   /** 경도 (기본값: 127.0992 서울) */
   longitude?: number;
+  /**
+   * IANA 타임존 ID (예: 'Asia/Seoul', 'America/Los_Angeles').
+   * 생략 시 'Asia/Seoul'로 폴백되므로 한국 이외 출생지는 반드시 명시할 것
+   * (누락 시 natal/saju/ziwei 전부 서울 기준으로 계산됨).
+   * 'Asia/Seoul'(또는 미지정)은 KST 벽시계 기반 한국 사주 관례를 유지하고,
+   * 그 외 타임존은 경도·균시차 기반 진태양시 보정을 적용한다.
+   */
+  timezone?: string;
 }
 
 /** 천간 정보 */
@@ -50,11 +69,11 @@ export interface Spirit {
 
 /** 사주 하나의 주 (柱) */
 export interface Pillar {
-  /** 60갑자 문자열 (예: '甲子') */
+  /** 60갑자 문자열 (예: '甲子'). 시간 미상 시주는 '??' */
   ganzi: string;
-  /** 천간 */
+  /** 천간. 시간 미상 시주는 '?' */
   stem: string;
-  /** 지지 */
+  /** 지지. 시간 미상 시주는 '?' */
   branch: string;
 }
 
@@ -77,6 +96,7 @@ export interface PillarDetail {
 export interface DaewoonItem {
   index: number;
   ganzi: string;
+  /** 실행 타임존과 무관한 역학상 벽시계 날짜. 달력 필드는 UTC getter로 조회 */
   startDate: Date;
   age: number;
   stemSipsin: string;
@@ -85,6 +105,8 @@ export interface DaewoonItem {
   unseong: string;
   /** 12신살 (연지 기준) */
   sinsal: string;
+  /** 공망 여부 */
+  isGongmang: boolean;
 }
 
 /** 관계 분석 결과 */
@@ -118,6 +140,14 @@ export interface SpecialSals {
   munchang: number[];   // 문창귀인 위치 인덱스
   hongyeom: boolean;    // 홍염살
   geumyeo: number[];    // 금여록 위치 인덱스
+}
+
+/** 공망 정보 */
+export interface Gongmang {
+  /** 공망 지지 2개 */
+  branches: [string, string];
+  /** 공망에 든 주의 인덱스 (0=시, 1=일, 2=월, 3=년) */
+  pillarIndices: number[];
 }
 
 /** 좌법 항목 (지장간 → 일지 운성) */
@@ -154,6 +184,8 @@ export interface SajuResult {
   relations: AllRelations;
   /** 신살 */
   specialSals: SpecialSals;
+  /** 공망 */
+  gongmang: Gongmang;
   /** 좌법 (각 주 지장간 → 일지 운성) — 4주×N지장간 */
   jwabeop: JwaEntry[][];
   /** 인종법 (일지에 없는 십성 카테고리 인종) */
@@ -173,7 +205,7 @@ export interface WuXingJu {
 /** 성요 정보 */
 export interface ZiweiStar {
   name: string;
-  brightness: string;  // 廟/旺/得/利/平/不/陷
+  brightness: string;  // 廟/旺/得/利/平/陷 (밝기 표에 없는 성요는 '')
   siHua: string;       // 化祿/化權/化科/化忌 or ''
 }
 
@@ -249,7 +281,7 @@ export type ZodiacSign =
 export type PlanetId =
   | 'Sun' | 'Moon' | 'Mercury' | 'Venus' | 'Mars'
   | 'Jupiter' | 'Saturn' | 'Uranus' | 'Neptune' | 'Pluto'
-  | 'Chiron' | 'NorthNode' | 'SouthNode';
+  | 'Chiron' | 'NorthNode' | 'SouthNode' | 'Fortuna';
 
 /** 행성 위치 */
 export interface PlanetPosition {
@@ -295,6 +327,9 @@ export interface NatalAspect {
 /** 네이탈 차트 전체 결과 */
 export interface NatalChart {
   input: BirthInput;
+  /** Actual house system; may differ from the request at polar latitudes. */
+  houseSystem?: string;
+  /** Chiron은 표 범위(1900-01-01 ~ 2099-12-23 UT)에서만, Fortuna는 출생 시간을 알 때만 포함 */
   planets: PlanetPosition[];
   houses: NatalHouse[];
   /** 앵글 (시간 모름이면 null) */

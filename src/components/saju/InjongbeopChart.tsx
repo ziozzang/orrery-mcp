@@ -2,6 +2,8 @@ import type { InjongEntry, PillarDetail } from '@orrery/core/types'
 import { ELEMENT_HANJA } from '@orrery/core/constants'
 import { STEM_INFO } from '@orrery/core/constants'
 import { stemColorClass } from '../../utils/format.ts'
+import { useLocale } from '../../i18n/index.ts'
+import Section from '../ui/Section.tsx'
 
 interface Props {
   injongbeop: InjongEntry[]
@@ -9,6 +11,7 @@ interface Props {
 }
 
 export default function InjongbeopChart({ injongbeop, pillars }: Props) {
+  const { t } = useLocale()
   if (injongbeop.length === 0) return null
 
   const dayBranch = pillars[1].pillar.branch
@@ -22,28 +25,27 @@ export default function InjongbeopChart({ injongbeop, pillars }: Props) {
   }).join(' ')
 
   return (
-    <section>
-      <h3 className="text-sm font-medium text-gray-700 mb-2">引從法</h3>
-      <p className="text-xs text-gray-400 mb-2">
-        日支 <span className="font-hanja">{dayBranch}</span> 지장간:
-        <span className="font-hanja ml-1">{jigangSummary}</span>
-        — 누락 십성의 양간 인종
-      </p>
-      <div className="flex flex-wrap gap-3">
+    <Section
+      hanja
+      title="引從法"
+      description={<>
+        日支 <span className="font-hanja">{dayBranch}</span> {t('saju.injong.jijanggan')}:
+        <span className="ml-1 font-hanja">{jigangSummary}</span>
+        {t('saju.injong.desc')}
+      </>}
+    >
+      <ul className="flex flex-wrap gap-x-6 gap-y-1.5">
         {injongbeop.map(entry => (
-          <div
-            key={entry.category}
-            className="flex items-center gap-1.5 text-sm border border-gray-200 rounded px-2.5 py-1.5"
-          >
-            <span className={`font-hanja ${stemColorClass(entry.yangStem)}`}>
+          <li key={entry.category} className="flex items-center gap-1.5 text-base">
+            <span className={`font-hanja font-medium ${stemColorClass(entry.yangStem)}`}>
               {entry.yangStem}{ELEMENT_HANJA[STEM_INFO[entry.yangStem]?.element ?? ''] ?? ''}
             </span>
-            <span className="text-gray-500 font-hanja">{entry.category}</span>
-            <span className="text-gray-400">→</span>
+            <span className="font-hanja text-fg-2">{entry.category}</span>
+            <span className="text-faint" aria-hidden="true">→</span>
             <span className="font-hanja">{entry.unseong}從</span>
-          </div>
+          </li>
         ))}
-      </div>
-    </section>
+      </ul>
+    </Section>
   )
 }

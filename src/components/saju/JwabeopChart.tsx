@@ -1,5 +1,7 @@
 import type { JwaEntry, PillarDetail } from '@orrery/core/types'
 import { stemColorClass } from '../../utils/format.ts'
+import { useLocale } from '../../i18n/index.ts'
+import Section from '../ui/Section.tsx'
 
 interface Props {
   jwabeop: JwaEntry[][]   // [시, 일, 월, 년]
@@ -10,20 +12,19 @@ interface Props {
 const LABELS = ['時柱', '日柱', '月柱', '年柱']
 
 export default function JwabeopChart({ jwabeop, pillars, unknownTime }: Props) {
+  const { t } = useLocale()
   // 최대 지장간 수 (행 수)
   const maxRows = Math.max(...jwabeop.map(entries => entries.length))
   if (maxRows === 0) return null
 
   return (
-    <section>
-      <h3 className="text-sm font-medium text-gray-700 mb-2">坐法</h3>
-      <p className="text-xs text-gray-400 mb-2">각 주 지장간이 일지에서 어떤 운성에 좌(坐)하는지</p>
+    <Section hanja title="坐法" description={t('saju.jwabeop.desc')}>
       <div className="overflow-x-auto">
-        <table className="w-full text-center text-sm font-hanja">
+        <table className="w-full max-w-xl text-left text-base font-hanja">
           <thead>
-            <tr className="text-xs text-gray-500">
+            <tr className="text-sm text-muted">
               {LABELS.map((label, i) => (
-                <th key={label} className="py-1 px-2 font-normal">
+                <th key={label} scope="col" className="py-1 pr-4 font-normal whitespace-nowrap">
                   {i === 0 && unknownTime ? '' : `${label} ${pillars[i].pillar.branch}`}
                 </th>
               ))}
@@ -34,15 +35,15 @@ export default function JwabeopChart({ jwabeop, pillars, unknownTime }: Props) {
               <tr key={row}>
                 {jwabeop.map((entries, col) => {
                   if (col === 0 && unknownTime) {
-                    return <td key={col} className="py-0.5 px-2 text-gray-300">?</td>
+                    return <td key={col} className="py-0.5 pr-4 text-faint">?</td>
                   }
                   const entry = entries[row]
-                  if (!entry) return <td key={col} className="py-0.5 px-2" />
+                  if (!entry) return <td key={col} className="py-0.5 pr-4" />
                   return (
-                    <td key={col} className="py-0.5 px-2">
-                      <span className={`${stemColorClass(entry.stem)}`}>{entry.stem}</span>
-                      <span className="text-gray-500 text-xs ml-1">{entry.sipsin}</span>
-                      <span className="text-gray-400 text-xs ml-1">{entry.unseong}坐</span>
+                    <td key={col} className="py-0.5 pr-4 whitespace-nowrap">
+                      <span className={`font-medium ${stemColorClass(entry.stem)}`}>{entry.stem}</span>
+                      <span className="ml-1.5 text-sm text-fg-2">{entry.sipsin}</span>
+                      <span className="ml-1.5 text-sm text-muted">{entry.unseong}坐</span>
                     </td>
                   )
                 })}
@@ -51,6 +52,6 @@ export default function JwabeopChart({ jwabeop, pillars, unknownTime }: Props) {
           </tbody>
         </table>
       </div>
-    </section>
+    </Section>
   )
 }

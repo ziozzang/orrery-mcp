@@ -30,11 +30,11 @@ describe('calculateNatal', () => {
     })
 
     it(`ASC/MC for ${label}`, async () => {
-      const chart = await calculateNatal(makeInput(fixture))
-      expect(chart.angles.asc.longitude).toBeCloseTo(fixture.expected.asc.lon, 0)
-      expect(chart.angles.asc.sign).toBe(fixture.expected.asc.sign)
-      expect(chart.angles.mc.longitude).toBeCloseTo(fixture.expected.mc.lon, 0)
-      expect(chart.angles.mc.sign).toBe(fixture.expected.mc.sign)
+      const angles = (await calculateNatal(makeInput(fixture))).angles!
+      expect(angles.asc.longitude).toBeCloseTo(fixture.expected.asc.lon, 0)
+      expect(angles.asc.sign).toBe(fixture.expected.asc.sign)
+      expect(angles.mc.longitude).toBeCloseTo(fixture.expected.mc.lon, 0)
+      expect(angles.mc.sign).toBe(fixture.expected.mc.sign)
     })
 
     it(`Mercury retrograde for ${label}`, async () => {
@@ -76,9 +76,183 @@ describe('calculateNatal', () => {
     }
   })
 
-  it('12 houses and 13 planets', async () => {
+  it('12 houses and 14 planets', async () => {
     const chart = await calculateNatal(makeInput(NATAL_FIXTURES[0]))
     expect(chart.houses).toHaveLength(12)
-    expect(chart.planets).toHaveLength(13) // 10 planets + Chiron + NorthNode + SouthNode
+    expect(chart.planets).toHaveLength(14) // 10 planets + Chiron + NorthNode + SouthNode + Fortuna
+  })
+
+  it('matches Swiss Ephemeris Placidus cusps and derived house assignments', async () => {
+    const chart = await calculateNatal(makeInput(NATAL_FIXTURES[0]))
+    const expectedCusps = [
+      55.89525, 81.57021, 103.16844, 125.66551, 153.45364, 191.21491,
+      235.89525, 261.57021, 283.16844, 305.66551, 333.45364, 11.21491,
+    ]
+
+    expect(chart.houses.map(house => house.cuspLongitude)).toEqual(
+      expectedCusps.map(cusp => expect.closeTo(cusp, 4)),
+    )
+    expect(Object.fromEntries(chart.planets.map(planet => [planet.id, planet.house]))).toMatchObject({
+      Jupiter: 6,
+      Saturn: 10,
+      NorthNode: 7,
+      SouthNode: 1,
+      Fortuna: 9,
+    })
+  })
+
+  it('Fortuna = ASC + Moon - Sun (day) or ASC + Sun - Moon (night)', async () => {
+    const chart = await calculateNatal(makeInput(NATAL_FIXTURES[0]))
+    const fortuna = chart.planets.find(p => p.id === 'Fortuna')!
+    const sun = chart.planets.find(p => p.id === 'Sun')!
+    const moon = chart.planets.find(p => p.id === 'Moon')!
+    const ascLon = chart.angles!.asc.longitude
+    const isDayChart = sun.house! >= 7
+    const expected = isDayChart
+      ? normalizeDeg(ascLon + moon.longitude - sun.longitude)
+      : normalizeDeg(ascLon + sun.longitude - moon.longitude)
+    expect(fortuna.longitude).toBeCloseTo(expected, 4)
+    expect(fortuna.house).toBeGreaterThanOrEqual(1)
+    expect(fortuna.house).toBeLessThanOrEqual(12)
+  })
+
+  it('uses explicit IANA time zones for overseas births', async () => {
+    const losAngeles = await calculateNatal({
+      year: 1990,
+      month: 7,
+      day: 1,
+      hour: 9,
+      minute: 0,
+      gender: 'M',
+      latitude: 34.0522,
+      longitude: -118.2437,
+      timezone: 'America/Los_Angeles',
+    })
+    const utc = await calculateNatal({
+      year: 1990,
+      month: 7,
+      day: 1,
+      hour: 16,
+      minute: 0,
+      gender: 'M',
+      latitude: 34.0522,
+      longitude: -118.2437,
+      timezone: 'UTC',
+    })
+    const laSun = losAngeles.planets.find(p => p.id === 'Sun')!
+    const utcSun = utc.planets.find(p => p.id === 'Sun')!
+
+    expect(laSun.longitude).toBeCloseTo(utcSun.longitude, 6)
+    expect(losAngeles.angles!.asc.longitude).toBeCloseTo(utc.angles!.asc.longitude, 6)
+    expect(losAngeles.angles!.mc.longitude).toBeCloseTo(utc.angles!.mc.longitude, 6)
+  })
+
+  it('applies PST (-8) for LA winter births — pairs PDT test above to lock the non-DST branch', async () => {
+    const losAngeles = await calculateNatal({
+      year: 1990, month: 1, day: 15, hour: 12, minute: 0,
+      gender: 'M', latitude: 34.0522, longitude: -118.2437,
+      timezone: 'America/Los_Angeles',
+    })
+    // 12:00 PST (UTC-8) → 20:00Z
+    const utc = await calculateNatal({
+      year: 1990, month: 1, day: 15, hour: 20, minute: 0,
+      gender: 'M', latitude: 34.0522, longitude: -118.2437,
+      timezone: 'UTC',
+    })
+    expect(losAngeles.planets.find(p => p.id === 'Sun')!.longitude)
+      .toBeCloseTo(utc.planets.find(p => p.id === 'Sun')!.longitude, 6)
+    expect(losAngeles.angles!.asc.longitude).toBeCloseTo(utc.angles!.asc.longitude, 6)
+    expect(losAngeles.angles!.mc.longitude).toBeCloseTo(utc.angles!.mc.longitude, 6)
+  })
+
+  it('1974 Nixon emergency DST: LA January resolves to PDT (-7) not PST (-8)', async () => {
+    const nixon = await calculateNatal({
+      year: 1974, month: 1, day: 15, hour: 12, minute: 0,
+      gender: 'M', latitude: 34.0522, longitude: -118.2437,
+      timezone: 'America/Los_Angeles',
+    })
+    // 12:00 PDT (UTC-7) → 19:00Z
+    const utc = await calculateNatal({
+      year: 1974, month: 1, day: 15, hour: 19, minute: 0,
+      gender: 'M', latitude: 34.0522, longitude: -118.2437,
+      timezone: 'UTC',
+    })
+    expect(nixon.planets.find(p => p.id === 'Sun')!.longitude)
+      .toBeCloseTo(utc.planets.find(p => p.id === 'Sun')!.longitude, 6)
+    expect(nixon.angles!.asc.longitude).toBeCloseTo(utc.angles!.asc.longitude, 6)
+  })
+
+  it('Sydney austral winter AEST (+10) gives different UTC than austral summer AEDT (+11) at same wall-clock', async () => {
+    const summer = await calculateNatal({
+      year: 2024, month: 1, day: 15, hour: 12, minute: 0,
+      gender: 'M', latitude: -33.8688, longitude: 151.2093,
+      timezone: 'Australia/Sydney',
+    })
+    const summerUtc = await calculateNatal({
+      year: 2024, month: 1, day: 15, hour: 1, minute: 0,
+      gender: 'M', latitude: -33.8688, longitude: 151.2093,
+      timezone: 'UTC',
+    })
+    expect(summer.planets.find(p => p.id === 'Sun')!.longitude)
+      .toBeCloseTo(summerUtc.planets.find(p => p.id === 'Sun')!.longitude, 6)
+
+    const winter = await calculateNatal({
+      year: 2024, month: 7, day: 15, hour: 12, minute: 0,
+      gender: 'M', latitude: -33.8688, longitude: 151.2093,
+      timezone: 'Australia/Sydney',
+    })
+    const winterUtc = await calculateNatal({
+      year: 2024, month: 7, day: 15, hour: 2, minute: 0,
+      gender: 'M', latitude: -33.8688, longitude: 151.2093,
+      timezone: 'UTC',
+    })
+    expect(winter.planets.find(p => p.id === 'Sun')!.longitude)
+      .toBeCloseTo(winterUtc.planets.find(p => p.id === 'Sun')!.longitude, 6)
+  })
+
+  it('rejects DST spring-forward gap input with a DST gap RangeError', async () => {
+    // Europe/Berlin 2024-03-31 02:30 is inside the spring-forward gap (clocks jump 02:00 → 03:00 CEST).
+    await expect(calculateNatal({
+      year: 2024, month: 3, day: 31, hour: 2, minute: 30,
+      gender: 'M', latitude: 52.52, longitude: 13.405,
+      timezone: 'Europe/Berlin',
+    })).rejects.toThrow(/^DST gap/)
+  })
+
+  const utcChart = (year: number, month: number, day: number, hour: number) => calculateNatal({
+    year, month, day, hour, minute: 0, gender: 'M', timezone: 'UTC',
+  })
+  const hasChiron = (chart: { planets: { id: string }[] }) => chart.planets.some(p => p.id === 'Chiron')
+
+  it('omits Chiron outside its range instead of failing', async () => {
+    for (const year of [1850, 2150]) {
+      const chart = await utcChart(year, 3, 12, 0)
+      expect(chart.planets.map(p => p.id)).toEqual([
+        'Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto',
+        'NorthNode', 'SouthNode', 'Fortuna',
+      ])
+      expect(chart.aspects.some(a => a.planet1 === 'Chiron' || a.planet2 === 'Chiron')).toBe(false)
+    }
+  })
+
+  it('includes Chiron from 1900-01-01 through 2099-12-31 UT', async () => {
+    expect(hasChiron(await utcChart(1899, 12, 31, 23))).toBe(false)
+    expect(hasChiron(await utcChart(1900, 1, 1, 0))).toBe(true)
+    expect(hasChiron(await utcChart(2099, 12, 31, 23))).toBe(true)
+    expect(hasChiron(await utcChart(2100, 1, 1, 0))).toBe(false)
+  })
+
+  it('rejects dates after the ephemeris range (year 3000)', async () => {
+    await expect(utcChart(3000, 12, 31, 23)).resolves.toMatchObject({ houses: expect.any(Array) })
+    await expect(utcChart(3001, 1, 1, 0)).rejects.toThrow(RangeError)
+    await expect(utcChart(9999, 12, 31, 0)).rejects.toThrow(/outside the ephemeris range/)
+  })
+
+  it('covers the year 1 in every time zone', async () => {
+    const chart = await calculateNatal({
+      year: 1, month: 1, day: 1, hour: 0, minute: 0, gender: 'M',
+      latitude: 1.87, longitude: -157.4, timezone: 'Pacific/Kiritimati',
+    })
+    expect(chart.planets.find(p => p.id === 'Sun')!.sign).toBe('Capricorn')
   })
 })

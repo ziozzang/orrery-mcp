@@ -1,13 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Orbit -->
-  <circle cx="32" cy="32" r="25" fill="none" stroke="#1f2937" stroke-width="4"/>
-
-  <!-- Sun -->
-  <circle cx="32" cy="32" r="7" fill="#1f2937"/>
-
-  <!-- Moon crescent (upper-right, ~45° on orbit) -->
-  <path d="M50,6 A7,7 0 1,0 50,20 A5,5 0 1,1 50,6Z" fill="#1f2937"/>
-
-  <!-- Star diamond (lower-left, ~210° on orbit) -->
-  <path d="M19.5,47 L24.5,54 19.5,61 14.5,54Z" fill="#1f2937"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- 로고(scripts/logo-master.png)를 작은 크기용으로 단순화한 마크: 굵은 엔소, 원 밖으로 나온 궤도, 주색 점 -->
+  <style>
+    .ink { fill: #15161c; }
+    .orbit { fill: none; stroke: #15161c; stroke-width: 5; }
+    @media (prefers-color-scheme: dark) {
+      .ink { fill: #f1ece2; }
+      .orbit { stroke: #f1ece2; }
+    }
+  </style>
+  <!-- 엔소의 붓 획이 끝나는 오른쪽 위 틈 -->
+  <mask id="gap">
+    <rect width="64" height="64" fill="#fff"/>
+    <path d="M32 32L52.52 -24.38L67.27 -16.54Z" fill="#000"/>
+  </mask>
+  <!-- 궤도는 엔소 바깥으로 나온 부분만 보이게 한다 -->
+  <mask id="hole">
+    <rect width="64" height="64" fill="#fff"/>
+    <circle cx="33.5" cy="30.5" r="15.5" fill="#000"/>
+  </mask>
+  <!-- 엔소: 안쪽 원을 오른쪽 위로 비켜 놓아 왼쪽 아래 획이 더 굵다 -->
+  <path class="ink" fill-rule="evenodd" mask="url(#gap)" d="M57 32A25 25 0 1 0 7 32A25 25 0 1 0 57 32ZM49 30.5A15.5 15.5 0 1 0 18 30.5A15.5 15.5 0 1 0 49 30.5Z"/>
+  <g mask="url(#hole)">
+    <ellipse class="orbit" cx="32" cy="32" rx="31.5" ry="8" transform="rotate(-20 32 32)"/>
+  </g>
+  <circle cx="31.5" cy="31.5" r="8" fill="#d7391e"/>
 </svg>

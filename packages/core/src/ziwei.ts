@@ -3,6 +3,7 @@
  */
 // @ts-expect-error lunar-javascript has no type declarations
 import { Solar } from 'lunar-javascript'
+import { assertCoordinate, assertDateTime } from './validation.ts'
 
 import {
   TIAN_GAN, DI_ZHI, PALACE_NAMES,
@@ -10,13 +11,17 @@ import {
   SI_HUA_TABLE, LU_CUN_TABLE, KUI_YUE_TABLE,
   HUO_XING_START, LING_XING_START, TIAN_MA_TABLE,
   ZIWEI_SERIES_OFFSETS, TIANFU_SERIES_OFFSETS,
-  BRIGHTNESS_TABLE, WU_HU_DUN_GAN, CHANGSHENG_START,
+  BRIGHTNESS_TABLE, WU_HU_DUN_GAN,
 } from './constants.ts'
 import type {
   WuXingJu, ZiweiStar, ZiweiPalace, ZiweiChart,
   LiuYueInfo, LiuNianInfo,
 } from './types.ts'
-import { adjustKdtToKst } from './kdt.ts'
+import {
+  adjustBirthInputToSolarTime,
+  adjustBirthInputToKstWallClock,
+  DEFAULT_TIMEZONE,
+} from './timezone.ts'
 
 // =============================================
 // 유틸리티
@@ -60,6 +65,12 @@ function solarToLunar(year: number, month: number, day: number): {
     lunarDay: lunar.getDay(),
     isLeap: rawMonth < 0,
   }
+}
+
+/** 양력 날짜가 속한 음력년 (설날 경계). */
+export function getLunarYear(year: number, month: number, day: number): number {
+  assertDateTime(year, month, day, 0, 0)
+  return solarToLunar(year, month, day).lunarYear
 }
 
 // =============================================
@@ -243,12 +254,34 @@ function getBrightness(star: string, zhi: string): string {
 
 export function createChart(
   year: number, month: number, day: number,
-  hour: number, minute: number, isMale: boolean,
+  hour: number, minute: number, isMale: boolean, timezone?: string, longitude?: number,
 ): ZiweiChart {
-  // KDT(하계표준시) → KST 보정
-  const kst = adjustKdtToKst(year, month, day, hour, minute)
-  year = kst.year; month = kst.month; day = kst.day
-  hour = kst.hour; minute = kst.minute
+  if (typeof isMale !== 'boolean') throw new RangeError('Invalid isMale')
+  if (longitude !== undefined) assertCoordinate(longitude, 180)
+  // Asia/Seoul(또는 미지정) 출생은 KST(+9) 벽시계를 기준으로 하는 한국 사주 관례에 맞춰
+  // 경도 기반 진태양시 보정을 건너뛰고, IANA Asia/Seoul 오프셋을 이용한 KST 벽시계 정규화만
+  // 적용한다 (1948-1951 KDT, 1954-1961 UTC+8:30/+9:30, 1987-1988 KDT 자동 포함).
+  if (timezone != null && timezone !== DEFAULT_TIMEZONE) {
+    const adjusted = adjustBirthInputToSolarTime({
+      year,
+      month,
+      day,
+      hour,
+      minute,
+      gender: isMale ? 'M' : 'F',
+      timezone,
+      ...(longitude != null ? { longitude } : {}),
+    })
+    year = adjusted.year; month = adjusted.month; day = adjusted.day
+    hour = adjusted.hour; minute = adjusted.minute
+  } else {
+    const kst = adjustBirthInputToKstWallClock({
+      year, month, day, hour, minute,
+      gender: isMale ? 'M' : 'F',
+    })
+    year = kst.year; month = kst.month; day = kst.day
+    hour = kst.hour; minute = kst.minute
+  }
 
   // 1. 음력 변환
   const { lunarYear, lunarMonth, lunarDay, isLeap } = solarToLunar(year, month, day)
@@ -360,17 +393,25 @@ function getPalaceByZhi(chart: ZiweiChart, zhi: string): ZiweiPalace | null {
   return null
 }
 
+/** 특정 음력 연도의 대한 인덱스. 음력 출생년을 1세로 센다. */
+export function getDaxianIndex(chart: ZiweiChart, year: number): number {
+  assertDateTime(year, 1, 1, 0, 0)
+  const age = year - chart.lunarYear + 1
+  const startAge = chart.daXianStartAge
+
+  let daxianNum = Math.floor((age - startAge) / 10)
+  if (daxianNum < 0) daxianNum = 0
+  if (daxianNum > 11) daxianNum = 11
+  return daxianNum
+}
+
 function getCurrentDaxian(chart: ZiweiChart, year: number): [string, number, number] {
-  const age = year - chart.solarYear + 1
   const startAge = chart.daXianStartAge
   const mingIdx = zhiIndex(chart.mingGongZhi)
 
   const isYangGan = ganIndex(chart.yearGan) % 2 === 0
   const direction = (isYangGan && chart.isMale) || (!isYangGan && !chart.isMale) ? 1 : -1
-
-  let daxianNum = Math.floor((age - startAge) / 10)
-  if (daxianNum < 0) daxianNum = 0
-  if (daxianNum > 11) daxianNum = 11
+  const daxianNum = getDaxianIndex(chart, year)
 
   const daxianStart = startAge + daxianNum * 10
   const daxianEnd = daxianStart + 9
@@ -383,6 +424,7 @@ function getCurrentDaxian(chart: ZiweiChart, year: number): [string, number, num
 }
 
 export function calculateLiunian(chart: ZiweiChart, year: number): LiuNianInfo {
+  assertDateTime(year, 1, 1, 0, 0)
   const [lnGan, lnZhi] = getLiunianGanZhi(year)
   const lnMingZhi = lnZhi
 
@@ -411,10 +453,12 @@ export function calculateLiunian(chart: ZiweiChart, year: number): LiuNianInfo {
     lnPalaces[PALACE_NAMES[i]] = zhiAt(lnMingIdx - i)
   }
 
-  // 유월 계산
+  // 斗君: 유년 지지에서 생월까지 역행하고 생시까지 순행하여 정월을 정한다.
+  // 윤달은 명반과 동일하게 해당 음력 월로 처리한다 (반월 분할을 적용하지 않음).
+  const firstMonthIdx = lnMingIdx - (chart.lunarMonth - 1) + hourZhiIndex(chart.hour)
   const liuyue: LiuYueInfo[] = []
   for (let m = 1; m <= 12; m++) {
-    const lyMingIdx = (lnMingIdx + (m - 1)) % 12
+    const lyMingIdx = ((firstMonthIdx + m - 1) % 12 + 12) % 12
     const lyMingZhi = zhiAt(lyMingIdx)
     const lyNatalPalace = getPalaceByZhi(chart, lyMingZhi)
     liuyue.push({

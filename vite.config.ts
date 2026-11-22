@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { resolve } from 'path'
 
 export default defineConfig({
-  base: '/orrery/',
+  base: '/',
   plugins: [
     react(),
     tailwindcss(),

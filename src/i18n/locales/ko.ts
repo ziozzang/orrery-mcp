@@ -1,0 +1,250 @@
+const ko: Record<string, string> = {
+  // App
+  'app.loading': '불러오는 중…',
+  'app.subtitle.tool': '사주팔자 · 자미두수 · 서양 점성술',
+  'app.lead': '생년월일시와 출생지를 넣으면 사주팔자, 자미두수 명반, 출생차트를 브라우저 안에서 계산합니다. 결과는 AI에게 해석을 맡길 수 있게 글로 복사할 수 있습니다.',
+  'app.tab.saju': '사주팔자',
+  'app.tab.ziwei': '자미두수',
+  'app.tab.natal': '출생차트',
+  'app.copyAll': 'AI 해석용 전체 복사',
+  'app.intro': '소개글',
+
+  // BirthForm
+  'form.title': '출생 정보',
+  'form.titleEdit': '프로필 수정',
+  'form.name': '이름',
+  'form.optional': '(선택)',
+  'form.nameHint': '이름을 적으면 프로필로 저장됩니다.',
+  'form.nameRequired': '이름을 입력해주세요.',
+  'form.gender': '성별',
+  'form.birthDate': '생년월일 (양력)',
+  'form.year': '연도',
+  'form.month': '월',
+  'form.day': '일',
+  'form.dateRequired': '생년월일을 입력해주세요.',
+  'form.yearRange': '연도는 {min}년부터 {max}년까지 입력할 수 있습니다.',
+  'form.daySuffix': '일',
+  'form.kdt': '88올림픽 하계표준시(KDT, UTC+10) 적용 기간입니다. 모든 계산에 자동 반영됩니다.',
+  'form.kstHistoricalOffset': '한국 표준시의 역사적 편차 구간(1948-1951 KDT, 1954-1961 UTC+8:30/+9:30, 1987-1988 KDT)에 해당하여, KST 벽시계 기준으로 자동 정규화합니다.',
+  'form.dstGapError': '입력하신 시각은 서머타임(DST) 전환 직후 건너뛴 구간에 해당하여 실제로 존재하지 않습니다. 출생 기록의 시간대를 다시 확인해 주세요.',
+  'form.time': '태어난 시각',
+  'form.hour': '시',
+  'form.minute': '분',
+  'form.timeRequired': '태어난 시각을 고르거나 ‘모름’에 표시해주세요.',
+  'form.unknown': '모름',
+  'form.hourSuffix': '시',
+  'form.minuteSuffix': '분',
+  'form.male': '남',
+  'form.female': '여',
+  'form.genderRequired': '성별을 선택해주세요.',
+  'form.birthPlace': '출생 위치',
+  'form.placeRequired': '출생 도시를 선택해주세요.',
+  'form.citySearch': '도시 선택',
+  'form.coordInput': '좌표 입력',
+  'form.latitude': '위도',
+  'form.longitude': '경도',
+  'form.coordinateInvalid': '좌표를 올바른 숫자로 입력해주세요.',
+  'form.invalidDate': '실제로 존재하는 날짜와 시각을 입력해주세요.',
+  'form.timezoneDefault': '자동 추론 시간대:',
+  'form.timezoneAutoDetectFailed': '현재 좌표로 시간대를 자동 추론하지 못했습니다. 좌표를 확인해주세요.',
+  'form.dstActive': '서머타임(DST) 적용 중',
+  'form.advanced': '고급 설정',
+  'form.jasiMethod': '자시법 (子時法)',
+  'form.unified': '통자시',
+  'form.split': '야자시',
+  'form.unifiedDesc': '23:30부터 子시, 일주를 다음날로 넘깁니다.',
+  'form.splitDesc': '23:30~00:00(야자시)은 子시이나, 일주는 당일 유지합니다.',
+  'form.calculate': '계산',
+  'form.saveAndCalculate': '저장하고 계산',
+  'form.privacy1': '모든 계산은 브라우저에서 처리되며,',
+  'form.privacy2': '입력하신 정보는 어떤 서버에도 전송되지 않습니다.',
+
+  // SubjectHeader
+  'subject.unsaved': '저장하지 않은 명식',
+  'subject.edit': '수정',
+
+  // CopyButton
+  'copy.failed': '복사 실패 · 다시 시도',
+  'copy.copy': '복사',
+  'copy.copied': '복사됨 ✓',
+  'copy.aiCopy': 'AI 해석용 복사',
+
+  // AI text export
+  'export.timeKst': '시각 기준: KST(UTC+09:00) 벽시계로 정규화; 역사적 표준시·서머타임 보정',
+  'export.timeSolar': '시각 기준: IANA 현지 시각 → UTC → 경도·균시차 기반 진태양시',
+  'export.timeUnspecified': '시각 기준: 원본 타임존 정보 미제공',
+  'export.sajuCalendar': '계산 기준: 年柱는 立春, 月柱는 천문 절입 시각 기준',
+  'export.sajuUnified': '子時法: 통자시 — 子時는 {start}부터, 日柱를 다음날로 전환',
+  'export.sajuSplit': '子時法: 야자시 — 子時는 {start}부터, 00:00 전 日柱는 당일·時干은 익일 기준',
+  'export.sajuAge': '大運 표시 나이: 시작 연도 − 보정된 출생 연도 (생일 기준 만 나이 아님)',
+  'export.ziweiCalendar': '계산 기준: 음력 달력(lunar-javascript); 年柱·流年은 설날 기준',
+  'export.ziweiTime': '子時: 23:00–01:00; 보정된 시각의 23시에는 음력 날짜를 당일로 유지',
+  'export.ziweiLeap': '閏月: 본월로 처리 (반월 분할 없음)',
+  'export.ziweiAge': '大限·流年 나이: 세는나이 = 조회 음력년 − 출생 음력년 + 1',
+  'export.ziweiFlowYear': '기간: 해당 음력년의 설날부터 다음 설날 전날까지',
+  'export.ziweiMonths': '流月 (음력 1–12월 · 斗君 기준 명궁 위치 요약)',
+  'export.natalBasis': '계산 기준: 트로피컬 황도 · 지구 중심 천체 위치 · 평균 달 교점',
+  'export.natalTime': '시각 기준: IANA 현지 시각 → UTC (역사적 표준시·서머타임 반영)',
+  'export.natalHouses': '하우스: {system}; 커스프 시작 포함·다음 커스프 제외',
+
+  // ThemeToggle
+  'theme.system': '시스템 설정 따름',
+  'theme.light': '라이트 모드',
+  'theme.dark': '다크 모드',
+
+  // LanguageMenu
+  'lang.select': '언어 선택',
+
+  // Date formats ({m} = month, {d} = day)
+  'date.monthDay': '{m}월 {d}일',
+
+  // CityCombobox
+  'city.noResults': '검색 결과 없음',
+  'city.korea': '한국',
+  'city.world': '세계',
+  'city.placeholder': '도시 이름을 입력하세요',
+
+  // Guide
+  'guide.title': '사용 방법',
+  'guide.step1': '생년월일, 태어난 시각, 성별, 출생지를 입력하고 계산합니다.',
+  'guide.step2': '사주팔자, 자미두수, 출생차트 탭에서 결과를 확인합니다.',
+  'guide.step3': '{copyAll}를 누르면 세 가지 결과가 한 번에 복사됩니다. 탭마다 있는 {copy} 버튼으로 하나씩 복사할 수도 있습니다.',
+  'guide.step4': 'Claude, ChatGPT, Gemini 등 AI 채팅에 붙여넣고 해석을 요청하세요.',
+  'guide.askAI': 'AI에게 이렇게 물어보세요',
+  'guide.personality': '성격 분석',
+  'guide.personalityEx': '다음은 내 사주팔자, 자미두수 명반, 출생차트야. 성격적 강점과 약점을 분석해줘.',
+  'guide.pasteData': '[복사한 데이터 붙여넣기]',
+  'guide.counseling': '고민 상담',
+  'guide.counselingEx': '아래 명반 데이터를 기반으로, 내가 살면서 힘들 수 있는 부분 Top 3를 뽑고 조언해줘.',
+  'guide.compatibility': '궁합 보기',
+  'guide.compatibilityEx': '두 사람의 명반 데이터를 보내줄게. 성격적으로 잘 맞는 부분과 부딪힐 수 있는 부분을 분석해줘.',
+  'guide.pasteA': '[A의 데이터 붙여넣기]',
+  'guide.pasteB': '[B의 데이터 붙여넣기]',
+
+  // ProfileModal
+  'profile.timeUnknown': '시간모름',
+  'profile.male': '남',
+  'profile.female': '여',
+  'profile.ilju': '일주',
+  'profile.listTitle': '프로필',
+  'profile.reorder': '{name} 순서 바꾸기',
+  'profile.moveUp': '위로 이동',
+  'profile.moveDown': '아래로 이동',
+  'profile.moved': '{name} 프로필을 목록의 {n}번째로 옮겼습니다.',
+  'profile.new': '새로 입력',
+  'profile.search': '이름으로 찾기',
+  'profile.searchEmpty': '찾는 이름이 없습니다.',
+  'profile.emptyHint': '저장한 프로필이 없습니다. 이름을 붙여 저장하면 여기에서 바로 불러올 수 있습니다.',
+  'profile.storageNote': '프로필은 이 브라우저에만 저장됩니다. 내보내기로 백업할 수 있습니다.',
+  'profile.close': '닫기',
+  'profile.export': '내보내기',
+  'profile.import': '가져오기',
+  'profile.imported': '프로필 {n}개를 가져왔습니다.',
+  'profile.importedNone': '새로 가져올 프로필이 없습니다.',
+  'profile.namePlaceholder': '별칭 입력',
+  'profile.save': '저장',
+  'profile.cancel': '취소',
+  'profile.delete': '프로필 삭제',
+  'profile.deleteConfirm': '이 프로필을 삭제할까요?',
+  'profile.deleteYes': '삭제',
+  'profile.storageError': '저장 공간이 부족합니다. 불필요한 프로필을 삭제해주세요.',
+  'profile.importError': '파일을 읽을 수 없습니다. 올바른 JSON 파일인지 확인해주세요.',
+
+  // Saju - PillarTable
+  'saju.sipsin': '십신',
+  'saju.cheongan': '천간',
+  'saju.jiji': '지지',
+  'saju.unseong': '운성',
+  'saju.sinsal': '신살',
+  'saju.janggan': '장간',
+  'saju.gongmang': '공망',
+
+  // Saju - DaewoonTable
+  'saju.noData': '대운 데이터가 없습니다.',
+  'saju.daewoonHint': '대운을 누르면 그 10년의 세운이 아래에 나옵니다.',
+  'saju.unknownTimeWarning': '출생 시간 없이 정오(12:00) 기준으로 계산하여 대운 시작 시기에 수개월 오차가 있을 수 있습니다.',
+  'saju.ageSuffix': '세',
+
+  // Saju - SinsalList
+  'saju.sal.cheonul': '천을귀인',
+  'saju.sal.cheonduk': '천덕귀인',
+  'saju.sal.wolduk': '월덕귀인',
+  'saju.sal.munchang': '문창귀인',
+  'saju.sal.geumyeo': '금여록',
+  'saju.sal.yangin': '양인살',
+  'saju.sal.dohwa': '도화살',
+  'saju.sal.baekho': '백호살',
+  'saju.sal.goegang': '괴강살',
+  'saju.sal.hongyeom': '홍염살',
+
+  // Saju - TransitView
+  'saju.transit.past': '과거',
+  'saju.transit.future': '향후',
+  'saju.transit.futureBtn': '미래',
+  'saju.transit.pastBtn': '과거',
+  'saju.transit.1month': '1개월',
+  'saju.transit.3months': '3개월',
+  'saju.transit.6months': '6개월',
+  'saju.transit.noRelation': '개월간 특별한 관계 없음',
+
+  // Saju - Transit relation prefix
+  'transit.stem': '천간',
+  'transit.branch': '지지',
+
+  // Saju - JwabeopChart
+  'saju.jwabeop.desc': '각 주 지장간이 일지에서 어떤 운성에 좌(坐)하는지',
+
+  // Saju - InjongbeopChart
+  'saju.injong.jijanggan': '지장간',
+  'saju.injong.desc': '— 누락 십성의 양간 인종',
+
+  // Ziwei
+  'ziwei.lunarYear': '流年 (음력년)',
+  'ziwei.needTime': '자미두수는 출생 시간이 필수입니다.',
+  'ziwei.needTimeDesc': '시간에 따라 명반 전체 구조가 바뀝니다. 출생 시간을 입력해주세요.',
+
+  // Natal
+  'natal.houseSystemFallback': '선택한 하우스를 계산할 수 없어 {system} 방식으로 표시합니다.',
+  'natal.loading': '출생차트 계산 중...',
+  'natal.error': '계산 오류',
+  'natal.unknownTime': '출생 시간 없이 정오(12:00) 기준으로 계산한 결과입니다.',
+  'natal.unknownTimeDetail': '달은 최대 ±6° 오차가 있을 수 있으며, ASC · 하우스 배치는 표시하지 않습니다.',
+  'natal.planet': '행성',
+  'natal.sign': '별자리',
+  'natal.degree': '도수',
+  'natal.house': '하우스',
+  'natal.planets': '행성 위치',
+  'natal.angles': '앵글',
+  'natal.houses': '하우스',
+  'natal.aspects': '주요 애스펙트',
+  'natal.houseSystem': '하우스 방식',
+  'natal.wheelDescription': '바깥 고리는 별자리와 도수, 안쪽 숫자는 하우스입니다. 행성 옆의 R은 역행을 뜻합니다. 중앙의 선은 행성 사이의 애스펙트입니다.',
+  'natal.aspectKey': '종류별 애스펙트 보기',
+  'natal.retrograde': '역행',
+  'natal.enlargeWheel': '차트 확대',
+  'natal.fitWheel': '화면에 맞추기',
+
+  'aspect.conjunction': '합',
+  'aspect.sextile': '육분각',
+  'aspect.square': '사각',
+  'aspect.trine': '삼분각',
+  'aspect.opposition': '충',
+
+  // Natal - Planets
+  'planet.Sun': '태양', 'planet.Moon': '달', 'planet.Mercury': '수성', 'planet.Venus': '금성',
+  'planet.Mars': '화성', 'planet.Jupiter': '목성', 'planet.Saturn': '토성', 'planet.Uranus': '천왕성',
+  'planet.Neptune': '해왕성', 'planet.Pluto': '명왕성', 'planet.Chiron': '키론',
+  'planet.NorthNode': '북교점', 'planet.SouthNode': '남교점', 'planet.Fortuna': '행운점',
+
+  // Natal - Zodiac Signs
+  'zodiac.Aries': '양자리', 'zodiac.Taurus': '황소자리', 'zodiac.Gemini': '쌍둥이자리', 'zodiac.Cancer': '게자리',
+  'zodiac.Leo': '사자자리', 'zodiac.Virgo': '처녀자리', 'zodiac.Libra': '천칭자리', 'zodiac.Scorpio': '전갈자리',
+  'zodiac.Sagittarius': '궁수자리', 'zodiac.Capricorn': '염소자리', 'zodiac.Aquarius': '물병자리', 'zodiac.Pisces': '물고기자리',
+
+  // Natal - Zodiac Signs (short, for mobile)
+  'zodiac.short.Aries': '양', 'zodiac.short.Taurus': '황소', 'zodiac.short.Gemini': '쌍둥이', 'zodiac.short.Cancer': '게',
+  'zodiac.short.Leo': '사자', 'zodiac.short.Virgo': '처녀', 'zodiac.short.Libra': '천칭', 'zodiac.short.Scorpio': '전갈',
+  'zodiac.short.Sagittarius': '궁수', 'zodiac.short.Capricorn': '염소', 'zodiac.short.Aquarius': '물병', 'zodiac.short.Pisces': '물고기',
+}
+
+export default ko

@@ -13,6 +13,7 @@ const inputSchema = {
   gender: z.enum(['M', 'F']).default('M'),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
+  timezone: z.string().optional().describe("IANA timezone; defaults to Asia/Seoul. Required for births outside Korea."),
 };
 
 const server = new McpServer({ name: 'orrery-mcp', version: '0.1.1' });
@@ -23,7 +24,7 @@ server.registerTool('calculate_saju', { description: 'Calculate Saju (Four Pilla
 });
 
 server.registerTool('calculate_ziwei', { description: 'Calculate Ziwei chart', inputSchema }, async (input) => {
-  const result = createChart(input.year, input.month, input.day, input.hour, input.minute ?? 0, input.gender === 'M');
+  const result = createChart(input.year, input.month, input.day, input.hour, input.minute ?? 0, input.gender === 'M', input.timezone, input.longitude);
   return { content: [{ type: 'text', text: JSON.stringify(result) }], structuredContent: result };
 });
 

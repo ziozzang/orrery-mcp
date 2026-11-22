@@ -1,39 +1,40 @@
 import type { NatalHouse } from '@orrery/core/types'
-import { ZODIAC_SYMBOLS, ZODIAC_KO, ROMAN, formatDegree } from '@orrery/core/natal'
+import { ZODIAC_SYMBOLS, ROMAN, formatDegree } from '@orrery/core/natal'
+import { useLocale } from '../../i18n/index.ts'
+import { textGlyph } from '../../utils/format.ts'
+import Section from '../ui/Section.tsx'
 
 interface Props {
   houses: NatalHouse[]
 }
 
 export default function HouseTable({ houses }: Props) {
-  const left = houses.slice(0, 6)
-  const right = houses.slice(6)
+  const { t } = useLocale()
+  const columns = [houses.slice(0, 6), houses.slice(6)]
 
   return (
-    <div>
-      <div className="grid grid-cols-2 gap-x-4">
-        {[left, right].map((col, ci) => (
-          <table key={ci} className="w-full text-sm">
+    <Section title={t('natal.houses')}>
+      <div className="grid max-w-xl grid-cols-2 gap-x-8">
+        {columns.map((column, ci) => (
+          <table key={ci} className="w-full text-base">
             <tbody>
-              {col.map(h => (
-                <tr key={h.number} className="border-b border-gray-50">
-                  <td className="py-1 pr-2 font-medium text-gray-500 w-8 text-right">
+              {column.map(h => (
+                <tr key={h.number} className="border-b border-line last:border-b-0">
+                  <th scope="row" className="w-9 py-1.5 pr-2 text-right font-medium text-muted">
                     {ROMAN[h.number - 1]}
+                  </th>
+                  <td className="py-1.5 pr-2 whitespace-nowrap text-fg-2">
+                    <span className="mr-1.5 inline-block w-5 text-center font-symbol text-lg leading-none text-fg">{textGlyph(ZODIAC_SYMBOLS[h.sign])}</span>
+                    <span className="sm:hidden">{t(`zodiac.short.${h.sign}`)}</span>
+                    <span className="hidden sm:inline">{t(`zodiac.${h.sign}`)}</span>
                   </td>
-                  <td className="py-1 pr-1">{ZODIAC_SYMBOLS[h.sign]}</td>
-                  <td className="py-1 pr-2 text-gray-600 whitespace-nowrap">
-                    <span className="sm:hidden">{ZODIAC_KO[h.sign].slice(0, -2)}</span>
-                    <span className="hidden sm:inline">{ZODIAC_KO[h.sign]}</span>
-                  </td>
-                  <td className="py-1 text-right font-mono text-gray-700">
-                    {formatDegree(h.cuspLongitude)}
-                  </td>
+                  <td className="py-1.5 text-right text-fg tabular-nums">{formatDegree(h.cuspLongitude)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         ))}
       </div>
-    </div>
+    </Section>
   )
 }

@@ -1,50 +1,53 @@
 import type { PlanetPosition, NatalAngles } from '@orrery/core/types'
-import { PLANET_SYMBOLS, PLANET_KO, ZODIAC_SYMBOLS, ZODIAC_KO, ROMAN, formatDegree } from '@orrery/core/natal'
+import { PLANET_SYMBOLS, ZODIAC_SYMBOLS, ROMAN, formatDegree } from '@orrery/core/natal'
+import { useLocale } from '../../i18n/index.ts'
+import { textGlyph } from '../../utils/format.ts'
 
 interface Props {
   planets: PlanetPosition[]
   angles: NatalAngles | null
 }
 
+function Sign({ sign }: { sign: PlanetPosition['sign'] }) {
+  const { t } = useLocale()
+  return (
+    <>
+      <span className="mr-1.5 inline-block w-5 text-center font-symbol text-lg leading-none text-fg">{textGlyph(ZODIAC_SYMBOLS[sign])}</span>
+      <span className="sm:hidden">{t(`zodiac.short.${sign}`)}</span>
+      <span className="hidden sm:inline">{t(`zodiac.${sign}`)}</span>
+    </>
+  )
+}
+
 export default function PlanetTable({ planets, angles }: Props) {
+  const { t } = useLocale()
   const showHouse = planets.some(p => p.house != null)
 
   return (
     <div>
-      <h3 className="text-xs font-medium text-gray-500 mb-2">Planets</h3>
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full max-w-xl text-base">
           <thead>
-            <tr className="text-xs text-gray-400 border-b border-gray-100">
-              <th className="text-left py-1 pr-2">행성</th>
-              <th className="text-left py-1 pr-2">별자리</th>
-              <th className="text-right py-1 pr-2">도수</th>
-              <th className="text-center py-1 pr-2">Rx</th>
-              {showHouse && <th className="text-center py-1">하우스</th>}
+            <tr className="border-b border-line text-sm text-muted">
+              <th scope="col" className="py-1.5 pr-3 text-left font-normal">{t('natal.planet')}</th>
+              <th scope="col" className="py-1.5 pr-3 text-left font-normal">{t('natal.sign')}</th>
+              <th scope="col" className="py-1.5 pr-3 text-right font-normal">{t('natal.degree')}</th>
+              <th scope="col" className="py-1.5 pr-3 text-center font-normal">Rx</th>
+              {showHouse && <th scope="col" className="py-1.5 text-center font-normal">{t('natal.house')}</th>}
             </tr>
           </thead>
           <tbody>
             {planets.map(p => (
-              <tr key={p.id} className="border-b border-gray-50">
-                <td className="py-1.5 pr-2">
-                  <span className="mr-1">{PLANET_SYMBOLS[p.id]}</span>
-                  <span className="text-gray-600">{PLANET_KO[p.id]}</span>
-                </td>
-                <td className="py-1.5 pr-2 whitespace-nowrap">
-                  <span className="mr-1">{ZODIAC_SYMBOLS[p.sign]}</span>
-                  <span className="text-gray-600 sm:hidden">{ZODIAC_KO[p.sign].slice(0, -2)}</span>
-                  <span className="text-gray-600 hidden sm:inline">{ZODIAC_KO[p.sign]}</span>
-                </td>
-                <td className="py-1.5 pr-2 text-right font-mono text-gray-700">
-                  {formatDegree(p.longitude)}
-                </td>
-                <td className="py-1.5 pr-2 text-center text-red-500">
-                  {p.isRetrograde ? 'R' : ''}
-                </td>
+              <tr key={p.id} className="border-b border-line last:border-b-0">
+                <th scope="row" className="py-1.5 pr-3 text-left font-normal whitespace-nowrap text-fg-2">
+                  <span className="mr-1.5 inline-block w-5 text-center font-symbol text-lg leading-none text-fg">{textGlyph(PLANET_SYMBOLS[p.id])}</span>
+                  {t(`planet.${p.id}`)}
+                </th>
+                <td className="py-1.5 pr-3 whitespace-nowrap text-fg-2"><Sign sign={p.sign} /></td>
+                <td className="py-1.5 pr-3 text-right text-fg tabular-nums">{formatDegree(p.longitude)}</td>
+                <td className="py-1.5 pr-3 text-center font-medium text-tone-red">{p.isRetrograde ? 'R' : ''}</td>
                 {showHouse && (
-                  <td className="py-1.5 text-center text-gray-600">
-                    {p.house != null ? ROMAN[p.house - 1] : ''}
-                  </td>
+                  <td className="py-1.5 text-center text-fg-2">{p.house != null ? ROMAN[p.house - 1] : ''}</td>
                 )}
               </tr>
             ))}
@@ -52,27 +55,27 @@ export default function PlanetTable({ planets, angles }: Props) {
         </table>
       </div>
 
-      {/* Angles — 시간 있을 때만 */}
+      {/* 앵글: 출생 시각이 있을 때만 */}
       {angles && (
-        <div className="mt-3 pt-3 border-t border-gray-100">
-          <h3 className="text-xs font-medium text-gray-500 mb-2">Angles</h3>
-          <div className="grid grid-cols-2 gap-2 text-sm">
+        <>
+          <h4 className="mt-6 mb-2 text-base font-semibold text-fg">{t('natal.angles')}</h4>
+          <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-1.5 text-base sm:grid-cols-2">
             {([
               ['ASC', angles.asc],
               ['MC', angles.mc],
               ['DESC', angles.desc],
               ['IC', angles.ic],
             ] as const).map(([label, a]) => (
-              <div key={label} className="flex items-center gap-2">
-                <span className="font-medium text-gray-700 w-10">{label}</span>
-                <span>{ZODIAC_SYMBOLS[a.sign]}</span>
-                <span className="text-gray-600 sm:hidden">{ZODIAC_KO[a.sign].slice(0, -2)}</span>
-                <span className="text-gray-600 hidden sm:inline">{ZODIAC_KO[a.sign]}</span>
-                <span className="font-mono text-gray-700">{formatDegree(a.longitude)}</span>
+              <div key={label} className="flex items-center gap-2 whitespace-nowrap">
+                <dt className="w-12 font-medium text-muted">{label}</dt>
+                <dd className="flex flex-1 items-center justify-between gap-3 text-fg-2">
+                  <span><Sign sign={a.sign} /></span>
+                  <span className="text-fg tabular-nums">{formatDegree(a.longitude)}</span>
+                </dd>
               </div>
             ))}
-          </div>
-        </div>
+          </dl>
+        </>
       )}
     </div>
   )

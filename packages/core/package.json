@@ -1,7 +1,15 @@
 {
   "name": "@orrery/core",
-  "version": "0.3.0",
-  "license": "AGPL-3.0-only",
+  "version": "0.6.0",
+  "description": "Saju (四柱八字), Ziwei Doushu (紫微斗數) and Western natal chart calculations in pure TypeScript for browsers and Node.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rath/orrery.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/rath/orrery/tree/main/packages/core#readme",
+  "bugs": "https://github.com/rath/orrery/issues",
   "type": "module",
   "keywords": [
     "saju",
@@ -19,51 +27,61 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./saju": {
-      "import": "./dist/saju.js",
-      "types": "./dist/saju.d.ts"
+      "types": "./dist/saju.d.ts",
+      "import": "./dist/saju.js"
     },
     "./ziwei": {
-      "import": "./dist/ziwei.js",
-      "types": "./dist/ziwei.d.ts"
+      "types": "./dist/ziwei.d.ts",
+      "import": "./dist/ziwei.js"
     },
     "./natal": {
-      "import": "./dist/natal.js",
-      "types": "./dist/natal.d.ts"
+      "types": "./dist/natal.d.ts",
+      "import": "./dist/natal.js"
+    },
+    "./timezone": {
+      "types": "./dist/timezone.d.ts",
+      "import": "./dist/timezone.js"
     },
     "./pillars": {
-      "import": "./dist/pillars.js",
-      "types": "./dist/pillars.d.ts"
+      "types": "./dist/pillars.d.ts",
+      "import": "./dist/pillars.js"
     },
     "./types": {
-      "import": "./dist/types.js",
-      "types": "./dist/types.d.ts"
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
     },
     "./constants": {
-      "import": "./dist/constants.js",
-      "types": "./dist/constants.d.ts"
+      "types": "./dist/constants.d.ts",
+      "import": "./dist/constants.js"
     },
     "./cities": {
-      "import": "./dist/cities.js",
-      "types": "./dist/cities.d.ts"
+      "types": "./dist/cities.d.ts",
+      "import": "./dist/cities.js"
+    },
+    "./validation": {
+      "types": "./dist/validation.d.ts",
+      "import": "./dist/validation.js"
     }
   },
   "files": [
-    "dist/"
+    "dist/",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup",
     "test": "vitest run"
   },
   "dependencies": {
-    "lunar-javascript": "^1.7.7"
+    "lunar-javascript": "^1.7.8"
   },
   "devDependencies": {
     "tsup": "^8.5.0",
     "typescript": "~5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.12"
   }
 }

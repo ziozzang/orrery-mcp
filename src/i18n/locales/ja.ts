@@ -1,0 +1,250 @@
+const ja: Record<string, string> = {
+  // App
+  'app.loading': '読み込み中…',
+  'app.subtitle.tool': '四柱八字 · 紫微斗数 · 西洋占星術',
+  'app.lead': '生年月日・出生時刻・出生地を入力すると、四柱八字、紫微斗数の命盤、出生チャートをブラウザ内で計算します。結果はテキストでコピーして、AI に鑑定を依頼できます。',
+  'app.tab.saju': '四柱八字',
+  'app.tab.ziwei': '紫微斗数',
+  'app.tab.natal': '出生チャート',
+  'app.copyAll': 'AI 鑑定用にすべてコピー',
+  'app.intro': '紹介',
+
+  // BirthForm
+  'form.title': '出生情報',
+  'form.titleEdit': 'プロフィールを編集',
+  'form.name': '名前',
+  'form.optional': '（任意）',
+  'form.nameHint': '名前を入力するとプロフィールとして保存され、次回すぐに開けます。',
+  'form.nameRequired': '名前を入力してください。',
+  'form.gender': '性別',
+  'form.birthDate': '生年月日（新暦）',
+  'form.year': '年',
+  'form.month': '月',
+  'form.day': '日',
+  'form.dateRequired': '生年月日を入力してください。',
+  'form.yearRange': '年は {min} 年から {max} 年の間で入力してください。',
+  'form.daySuffix': '日',
+  'form.kdt': '88オリンピック夏時間（KDT, UTC+10）適用期間です。すべての計算に自動反映されます。',
+  'form.kstHistoricalOffset': 'この日付は韓国標準時の歴史的な時差変動期間（1948-1951 KDT、1954-1961 UTC+8:30/+9:30、1987-1988 KDT）に該当し、KSTの壁時計基準で自動的に正規化されます。',
+  'form.dstGapError': '入力された時刻はサマータイム(DST)切替により存在しない時間帯です。出生記録のタイムゾーンを再確認してください。',
+  'form.time': '出生時刻',
+  'form.hour': '時',
+  'form.minute': '分',
+  'form.timeRequired': '出生時刻を選ぶか、「不明」にチェックを入れてください。',
+  'form.unknown': '不明',
+  'form.hourSuffix': '時',
+  'form.minuteSuffix': '分',
+  'form.male': '男',
+  'form.female': '女',
+  'form.genderRequired': '性別を選択してください。',
+  'form.birthPlace': '出生地',
+  'form.placeRequired': '出生地の都市を選択してください。',
+  'form.citySearch': '都市を選択',
+  'form.coordInput': '座標を入力',
+  'form.latitude': '緯度',
+  'form.longitude': '経度',
+  'form.coordinateInvalid': '座標は有効な数値で入力してください。',
+  'form.invalidDate': '実在する日付と時刻を入力してください。',
+  'form.timezoneDefault': '自動推定タイムゾーン:',
+  'form.timezoneAutoDetectFailed': '現在の座標からタイムゾーンを自動推定できませんでした。座標を確認してください。',
+  'form.dstActive': 'サマータイム(DST)適用中',
+  'form.advanced': '詳細設定',
+  'form.jasiMethod': '子時法（子時法）',
+  'form.unified': '統子時',
+  'form.split': '夜子時',
+  'form.unifiedDesc': '23:30から子時とし、日柱を翌日に繰り越します。',
+  'form.splitDesc': '23:30〜00:00（夜子時）は子時ですが、日柱は当日のまま維持します。',
+  'form.calculate': '計算',
+  'form.saveAndCalculate': '保存して計算',
+  'form.privacy1': 'すべての計算はブラウザ内で処理され、',
+  'form.privacy2': '入力された情報はいかなるサーバーにも送信されません。',
+
+  // SubjectHeader
+  'subject.unsaved': '未保存の命式',
+  'subject.edit': '編集',
+
+  // CopyButton
+  'copy.failed': 'コピー失敗 · 再試行',
+  'copy.copy': 'コピー',
+  'copy.copied': 'コピー済み ✓',
+  'copy.aiCopy': 'AI 鑑定用コピー',
+
+  // AI text export
+  'export.timeKst': '時刻基準：KST（UTC+09:00）の時計時刻に正規化。歴史的な時差・夏時間を補正',
+  'export.timeSolar': '時刻基準：IANA 現地時刻 → UTC → 経度・均時差に基づく真太陽時',
+  'export.timeUnspecified': '時刻基準：元のタイムゾーン情報なし',
+  'export.sajuCalendar': '計算基準：年柱は立春、月柱は天文上の節入り時刻で切り替え',
+  'export.sajuUnified': '子時法：通子時 — 子時は {start} から、日柱を翌日に切り替え',
+  'export.sajuSplit': '子時法：分割 — 子時は {start} から、00:00 前の日柱は当日、時干は翌日基準',
+  'export.sajuAge': '大運の表示年齢：開始年 − 補正後の出生年（誕生日基準の満年齢ではない）',
+  'export.ziweiCalendar': '計算基準：旧暦（lunar-javascript）。年柱・流年は旧正月で切り替え',
+  'export.ziweiTime': '子時：23:00–01:00。補正後の23時は旧暦の日付を当日のまま維持',
+  'export.ziweiLeap': '閏月：対応する通常月として扱う（半月での分割なし）',
+  'export.ziweiAge': '大限・流年の年齢：数え年 = 対象の旧暦年 − 出生の旧暦年 + 1',
+  'export.ziweiFlowYear': '期間：記載の旧暦年の旧正月から次の旧正月の前日まで',
+  'export.ziweiMonths': '流月（旧暦1–12月 · 斗君に基づく命宮の位置概要）',
+  'export.natalBasis': '計算基準：トロピカル黄道 · 地心位置 · 平均月交点',
+  'export.natalTime': '時刻基準：IANA 現地時刻 → UTC（歴史的な時差・夏時間を適用）',
+  'export.natalHouses': 'ハウス：{system}。開始カスプを含み、次のカスプを含まない',
+
+  // ThemeToggle
+  'theme.system': 'システム設定に従う',
+  'theme.light': 'ライトモード',
+  'theme.dark': 'ダークモード',
+
+  // LanguageMenu
+  'lang.select': '言語を選択',
+
+  // Date formats ({m} = month, {d} = day)
+  'date.monthDay': '{m}月 {d}日',
+
+  // CityCombobox
+  'city.noResults': '検索結果なし',
+  'city.korea': '韓国',
+  'city.world': '世界',
+  'city.placeholder': '都市名を入力してください',
+
+  // Guide
+  'guide.title': '使い方',
+  'guide.step1': '生年月日、出生時刻、性別、出生地を入力して計算します。',
+  'guide.step2': '四柱八字・紫微斗数・出生チャートのタブで結果を確認します。',
+  'guide.step3': '{copyAll} を押すと、3つの結果が一括でコピーされます。各タブの {copy} ボタンで個別にコピーすることもできます。',
+  'guide.step4': 'Claude、ChatGPT、Gemini などの AI チャットに貼り付けて鑑定を依頼してください。',
+  'guide.askAI': 'AI にこう聞いてみましょう',
+  'guide.personality': '性格分析',
+  'guide.personalityEx': '以下は私の四柱八字、紫微斗数の命盤、出生チャートです。性格的な強みと弱みを分析してください。',
+  'guide.pasteData': '[コピーしたデータを貼り付け]',
+  'guide.counseling': 'お悩み相談',
+  'guide.counselingEx': '以下の命盤データに基づいて、人生で苦労しやすい点 Top 3 を挙げてアドバイスしてください。',
+  'guide.compatibility': '相性診断',
+  'guide.compatibilityEx': '二人の命盤データを送ります。性格的に合う部分とぶつかりやすい部分を分析してください。',
+  'guide.pasteA': '[A のデータを貼り付け]',
+  'guide.pasteB': '[B のデータを貼り付け]',
+
+  // ProfileModal
+  'profile.timeUnknown': '時間不明',
+  'profile.male': '男',
+  'profile.female': '女',
+  'profile.ilju': '日柱',
+  'profile.listTitle': 'プロフィール',
+  'profile.reorder': '{name}の順序を変更',
+  'profile.moveUp': '上へ移動',
+  'profile.moveDown': '下へ移動',
+  'profile.moved': '{name}を一覧の{n}番目に移動しました。',
+  'profile.new': '新規入力',
+  'profile.search': '名前で探す',
+  'profile.searchEmpty': '該当する名前がありません。',
+  'profile.emptyHint': '保存したプロフィールはまだありません。名前を付けて保存すると、ここからすぐに開けます。',
+  'profile.storageNote': 'プロフィールはこのブラウザにのみ保存されます。エクスポートでバックアップできます。',
+  'profile.close': '閉じる',
+  'profile.export': 'エクスポート',
+  'profile.import': 'インポート',
+  'profile.imported': '{n} 件のプロフィールをインポートしました。',
+  'profile.importedNone': '新しくインポートするプロフィールはありません。',
+  'profile.namePlaceholder': 'ニックネームを入力',
+  'profile.save': '保存',
+  'profile.cancel': 'キャンセル',
+  'profile.delete': 'プロフィールを削除',
+  'profile.deleteConfirm': 'このプロフィールを削除しますか？',
+  'profile.deleteYes': '削除',
+  'profile.storageError': '保存容量が不足しています。不要なプロフィールを削除してください。',
+  'profile.importError': 'ファイルを読み込めません。正しい JSON ファイルか確認してください。',
+
+  // Saju - PillarTable
+  'saju.sipsin': '十神',
+  'saju.cheongan': '天干',
+  'saju.jiji': '地支',
+  'saju.unseong': '運星',
+  'saju.sinsal': '神殺',
+  'saju.janggan': '蔵干',
+  'saju.gongmang': '空亡',
+
+  // Saju - DaewoonTable
+  'saju.noData': '大運データがありません。',
+  'saju.daewoonHint': '大運を選ぶと、その10年の歳運が下に表示されます。',
+  'saju.unknownTimeWarning': '出生時間未入力のため正午（12:00）基準で計算しており、大運の開始時期に数か月の誤差がある可能性があります。',
+  'saju.ageSuffix': '歳',
+
+  // Saju - SinsalList
+  'saju.sal.cheonul': '天乙貴人',
+  'saju.sal.cheonduk': '天徳貴人',
+  'saju.sal.wolduk': '月徳貴人',
+  'saju.sal.munchang': '文昌貴人',
+  'saju.sal.geumyeo': '金輿禄',
+  'saju.sal.yangin': '羊刃殺',
+  'saju.sal.dohwa': '桃花殺',
+  'saju.sal.baekho': '白虎殺',
+  'saju.sal.goegang': '魁罡殺',
+  'saju.sal.hongyeom': '紅艶殺',
+
+  // Saju - TransitView
+  'saju.transit.past': '過去',
+  'saju.transit.future': '今後',
+  'saju.transit.futureBtn': '未来',
+  'saju.transit.pastBtn': '過去',
+  'saju.transit.1month': '1か月',
+  'saju.transit.3months': '3か月',
+  'saju.transit.6months': '6か月',
+  'saju.transit.noRelation': 'か月間、特別な関係なし',
+
+  // Saju - Transit relation prefix
+  'transit.stem': '天干',
+  'transit.branch': '地支',
+
+  // Saju - JwabeopChart
+  'saju.jwabeop.desc': '各柱の蔵干が日支でどの運星に坐（坐）するか',
+
+  // Saju - InjongbeopChart
+  'saju.injong.jijanggan': '蔵干',
+  'saju.injong.desc': '— 欠落十神の陽干引種',
+
+  // Ziwei
+  'ziwei.lunarYear': '流年（旧暦年）',
+  'ziwei.needTime': '紫微斗数には出生時間が必須です。',
+  'ziwei.needTimeDesc': '出生時間によって命盤の構造が変わります。出生時間を入力してください。',
+
+  // Natal
+  'natal.houseSystemFallback': '選択したハウス方式を計算できないため、{system} 方式で表示します。',
+  'natal.loading': '出生チャートを計算中...',
+  'natal.error': '計算エラー',
+  'natal.unknownTime': '出生時間未入力のため、正午（12:00）基準で計算した結果です。',
+  'natal.unknownTimeDetail': '月は最大 ±6° の誤差がある可能性があり、ASC・ハウス配置は表示しません。',
+  'natal.planet': '惑星',
+  'natal.sign': '星座',
+  'natal.degree': '度数',
+  'natal.house': 'ハウス',
+  'natal.planets': '惑星の位置',
+  'natal.angles': 'アングル',
+  'natal.houses': 'ハウス',
+  'natal.aspects': 'メジャーアスペクト',
+  'natal.houseSystem': 'ハウスシステム',
+  'natal.wheelDescription': '外側のリングは星座と度数、内側の数字はハウスを示します。天体に付く R は逆行の印です。中央の線は天体間のアスペクトを示します。',
+  'natal.aspectKey': '種類別にアスペクトを表示',
+  'natal.retrograde': '逆行',
+  'natal.enlargeWheel': 'チャートを拡大',
+  'natal.fitWheel': '画面に合わせる',
+
+  'aspect.conjunction': 'コンジャンクション',
+  'aspect.sextile': 'セクスタイル',
+  'aspect.square': 'スクエア',
+  'aspect.trine': 'トライン',
+  'aspect.opposition': 'オポジション',
+
+  // Natal - Planets
+  'planet.Sun': '太陽', 'planet.Moon': '月', 'planet.Mercury': '水星', 'planet.Venus': '金星',
+  'planet.Mars': '火星', 'planet.Jupiter': '木星', 'planet.Saturn': '土星', 'planet.Uranus': '天王星',
+  'planet.Neptune': '海王星', 'planet.Pluto': '冥王星', 'planet.Chiron': 'キロン',
+  'planet.NorthNode': '北交点', 'planet.SouthNode': '南交点', 'planet.Fortuna': 'フォーチュナ',
+
+  // Natal - Zodiac Signs
+  'zodiac.Aries': '牡羊座', 'zodiac.Taurus': '牡牛座', 'zodiac.Gemini': '双子座', 'zodiac.Cancer': '蟹座',
+  'zodiac.Leo': '獅子座', 'zodiac.Virgo': '乙女座', 'zodiac.Libra': '天秤座', 'zodiac.Scorpio': '蠍座',
+  'zodiac.Sagittarius': '射手座', 'zodiac.Capricorn': '山羊座', 'zodiac.Aquarius': '水瓶座', 'zodiac.Pisces': '魚座',
+
+  // Natal - Zodiac Signs (short, for mobile)
+  'zodiac.short.Aries': '牡羊', 'zodiac.short.Taurus': '牡牛', 'zodiac.short.Gemini': '双子', 'zodiac.short.Cancer': '蟹',
+  'zodiac.short.Leo': '獅子', 'zodiac.short.Virgo': '乙女', 'zodiac.short.Libra': '天秤', 'zodiac.short.Scorpio': '蠍',
+  'zodiac.short.Sagittarius': '射手', 'zodiac.short.Capricorn': '山羊', 'zodiac.short.Aquarius': '水瓶', 'zodiac.short.Pisces': '魚',
+}
+
+export default ja

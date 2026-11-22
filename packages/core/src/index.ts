@@ -2,16 +2,28 @@
 export { calculateSaju } from './saju.ts'
 
 // 자미두수 (紫微斗數)
-export { createChart, calculateLiunian, getDaxianList } from './ziwei.ts'
+export { createChart, calculateLiunian, getDaxianIndex, getDaxianList, getLunarYear } from './ziwei.ts'
 
 // 서양 점성술 (Natal Chart)
 export {
   calculateNatal, lonToSign, normalizeDeg, formatDegree,
-  isKoreanDaylightTime,
+  isKoreanDaylightTime, isKoreanHistoricalTimeAnomaly,
   ZODIAC_SIGNS, ZODIAC_SYMBOLS, ZODIAC_KO,
   PLANET_SYMBOLS, PLANET_KO, ASPECT_SYMBOLS,
   ROMAN, HOUSE_SYSTEMS,
 } from './natal.ts'
+
+// 타임존 · DST 유틸리티
+export {
+  DEFAULT_TIMEZONE,
+  resolveLocalDateTimeToUtc,
+  resolveLocalDateTimeToUtcSafe,
+  adjustBirthInputToSolarTime,
+  adjustBirthInputToKstWallClock,
+  getBirthTimezone,
+  birthInputToUtcDate,
+} from './timezone.ts'
+export type { ResolveLocalDateTimeToUtcResult } from './timezone.ts'
 
 // 사주 저수준 API
 export {
@@ -21,8 +33,9 @@ export {
   analyzePillarRelations, analyzeAllRelations,
   checkTripleCompose, checkDirectionalCompose,
   getSpecialSals, findTransits, calculateJwabeop, calculateInjongbeop,
-  calcPillarIndices, calcSolarTerms,
+  calcPillarIndices, calcSolarTerms, getGongmang, getYearGanzi,
 } from './pillars.ts'
+export type { PillarCalculationOptions } from './pillars.ts'
 
 // 상수/심볼
 export {
@@ -32,6 +45,7 @@ export {
   PILLAR_NAMES, HGANJI, JIJANGGAN, METEOR_LOOKUP,
   TIAN_GAN, DI_ZHI, PALACE_NAMES,
   MAIN_STAR_NAMES, LUCKY_STAR_NAMES, SHA_STAR_NAMES,
+  GONGMANG_TABLE,
 } from './constants.ts'
 
 // 도시 데이터
@@ -43,11 +57,11 @@ export type { City } from './cities.ts'
 
 // 타입
 export type {
-  Element, YinYang, Gender, BirthInput,
+  Element, YinYang, Gender, JasiMethod, BirthInput,
   StemInfo, Relation, Meteor, Spirit,
   Pillar, PillarDetail, DaewoonItem,
   RelationResult, PairRelation, AllRelations,
-  SpecialSals, TransitItem, JwaEntry, InjongEntry,
+  SpecialSals, Gongmang, TransitItem, JwaEntry, InjongEntry,
   SajuResult,
   WuXingJu, ZiweiStar, ZiweiPalace, ZiweiChart,
   LiuYueInfo, LiuNianInfo,

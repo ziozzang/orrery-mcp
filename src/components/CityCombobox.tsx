@@ -1,20 +1,20 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import type { City } from '@orrery/core/cities'
 import { KOREAN_CITIES, filterCities, formatCityName } from '@orrery/core/cities'
+import { useLocale } from '../i18n/index.ts'
+import { inputClass } from './ui/classes.ts'
 
 interface Props {
   selectedCity: City | null
   onSelect: (city: City) => void
+  invalid?: boolean
 }
-
-const inputClass =
-  'w-full h-10 px-3 border border-gray-200 rounded-lg text-sm text-gray-800 bg-white ' +
-  'focus:outline-none focus:ring-2 focus:ring-gray-800/20 focus:border-gray-400 transition-all'
 
 /** 포커스 시 보여줄 기본 도시 목록 (한국 주요 도시) */
 const DEFAULT_CITIES = KOREAN_CITIES.slice(0, 8) as City[]
 
-export default function CityCombobox({ selectedCity, onSelect }: Props) {
+export default function CityCombobox({ selectedCity, onSelect, invalid }: Props) {
+  const { t } = useLocale()
   const [query, setQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [highlightIndex, setHighlightIndex] = useState(-1)
@@ -70,11 +70,11 @@ export default function CityCombobox({ selectedCity, onSelect }: Props) {
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault()
-        setHighlightIndex(i => (i + 1) % flatResults.length)
+        setHighlightIndex(i => flatResults.length ? (i + 1) % flatResults.length : -1)
         break
       case 'ArrowUp':
         e.preventDefault()
-        setHighlightIndex(i => (i - 1 + flatResults.length) % flatResults.length)
+        setHighlightIndex(i => flatResults.length ? (i - 1 + flatResults.length) % flatResults.length : -1)
         break
       case 'Enter':
         e.preventDefault()
@@ -108,8 +108,8 @@ export default function CityCombobox({ selectedCity, onSelect }: Props) {
   function renderOptions() {
     if (flatResults.length === 0) {
       return (
-        <li className="px-3 py-2 text-sm text-gray-400 text-center">
-          검색 결과 없음
+        <li className="px-3 py-2 text-center text-base text-muted">
+          {t('city.noResults')}
         </li>
       )
     }
@@ -119,8 +119,8 @@ export default function CityCombobox({ selectedCity, onSelect }: Props) {
 
     if (koreanResults.length > 0) {
       items.push(
-        <li key="header-kr" className="px-3 pt-1.5 pb-1 text-xs font-medium text-gray-400" role="presentation">
-          한국
+        <li key="header-kr" className="px-3 pt-1.5 pb-1 text-sm font-medium text-muted" role="presentation">
+          {t('city.korea')}
         </li>
       )
       for (const city of koreanResults) {
@@ -132,12 +132,12 @@ export default function CityCombobox({ selectedCity, onSelect }: Props) {
     if (worldResults.length > 0) {
       if (koreanResults.length > 0) {
         items.push(
-          <li key="divider" className="border-t border-gray-100 my-1" role="presentation" />
+          <li key="divider" className="my-1 border-t border-line" role="presentation" />
         )
       }
       items.push(
-        <li key="header-world" className="px-3 pt-1.5 pb-1 text-xs font-medium text-gray-400" role="presentation">
-          세계
+        <li key="header-world" className="px-3 pt-1.5 pb-1 text-sm font-medium text-muted" role="presentation">
+          {t('city.world')}
         </li>
       )
       for (const city of worldResults) {
@@ -154,12 +154,11 @@ export default function CityCombobox({ selectedCity, onSelect }: Props) {
     const label = formatCityName(city)
     return (
       <li
-        key={`${city.name}-${city.country ?? 'kr'}`}
+        key={`${city.name}-${city.country ?? city.region ?? 'kr'}`}
+        id={`city-option-${index}`}
         role="option"
         aria-selected={isHighlighted}
-        className={`px-3 py-2 text-sm cursor-pointer transition-colors ${
-          isHighlighted ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'
-        }`}
+        className={`px-3 py-2 text-base ${isHighlighted ? 'bg-sunken text-fg' : 'text-fg-2'}`}
         onMouseDown={e => handleOptionMouseDown(e, city)}
         onMouseEnter={() => setHighlightIndex(index)}
       >
@@ -180,8 +179,10 @@ export default function CityCombobox({ selectedCity, onSelect }: Props) {
         aria-controls={listboxId}
         aria-activedescendant={highlightIndex >= 0 ? `city-option-${highlightIndex}` : undefined}
         autoComplete="off"
-        className={inputClass}
-        placeholder="도시 이름을 입력하세요"
+        aria-label={t('form.birthPlace')}
+        aria-invalid={invalid || undefined}
+        className={`${inputClass} pr-9`}
+        placeholder={t('city.placeholder')}
         value={displayValue}
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -190,9 +191,10 @@ export default function CityCombobox({ selectedCity, onSelect }: Props) {
       />
       {/* 드롭다운 아이콘 */}
       <svg
-        className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+        className="pointer-events-none absolute top-1/2 right-2.5 h-4 w-4 -translate-y-1/2 text-faint"
         viewBox="0 0 20 20"
         fill="currentColor"
+        aria-hidden="true"
       >
         <path
           fillRule="evenodd"
@@ -206,7 +208,7 @@ export default function CityCombobox({ selectedCity, onSelect }: Props) {
           ref={listRef}
           id={listboxId}
           role="listbox"
-          className="absolute z-50 mt-1 w-full max-h-60 overflow-auto rounded-lg border border-gray-200 bg-white shadow-lg py-1"
+          className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-md border border-line bg-surface py-1 shadow-lg"
         >
           {renderOptions()}
         </ul>

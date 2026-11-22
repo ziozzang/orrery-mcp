@@ -1,0 +1,250 @@
+const en: Record<string, string> = {
+  // App
+  'app.loading': 'Loading…',
+  'app.subtitle.tool': 'Saju · Ziwei Doushu · Natal Chart',
+  'app.lead': 'Enter a birth date, time and place to compute the Four Pillars, a Ziwei Doushu chart and a Western natal chart, all inside your browser. Copy the result as text and ask an AI to read it.',
+  'app.tab.saju': 'Saju (四柱八字)',
+  'app.tab.ziwei': 'Ziwei Doushu (紫微斗数)',
+  'app.tab.natal': 'Natal Chart',
+  'app.copyAll': 'Copy All for AI Reading',
+  'app.intro': 'About',
+
+  // BirthForm
+  'form.title': 'Birth Details',
+  'form.titleEdit': 'Edit Profile',
+  'form.name': 'Name',
+  'form.optional': '(optional)',
+  'form.nameHint': 'Add a name to save this as a profile and open it again later.',
+  'form.nameRequired': 'Enter a name.',
+  'form.gender': 'Gender',
+  'form.birthDate': 'Date of Birth (Solar)',
+  'form.year': 'Year',
+  'form.month': 'Month',
+  'form.day': 'Day',
+  'form.dateRequired': 'Enter the date of birth.',
+  'form.yearRange': 'Enter a year from {min} to {max}.',
+  'form.daySuffix': '',
+  'form.kdt': 'This period falls under the 1988 Olympics summer time (KDT, UTC+10). All calculations are automatically adjusted.',
+  'form.kstHistoricalOffset': 'This date falls under Korean historical timezone anomalies (1948-1951 KDT, 1954-1961 UTC+8:30/+9:30, 1987-1988 KDT). All calculations are automatically normalized to KST wall-clock.',
+  'form.dstGapError': 'The entered time falls in a DST spring-forward gap and does not exist. Please verify the timezone of the birth record.',
+  'form.time': 'Time of Birth',
+  'form.hour': 'Hour',
+  'form.minute': 'Minute',
+  'form.timeRequired': 'Choose the time of birth, or tick Unknown.',
+  'form.unknown': 'Unknown',
+  'form.hourSuffix': '',
+  'form.minuteSuffix': '',
+  'form.male': 'Male',
+  'form.female': 'Female',
+  'form.genderRequired': 'Choose a gender.',
+  'form.birthPlace': 'Birthplace',
+  'form.placeRequired': 'Choose the city of birth.',
+  'form.citySearch': 'Choose City',
+  'form.coordInput': 'Enter Coordinates',
+  'form.latitude': 'Latitude',
+  'form.longitude': 'Longitude',
+  'form.coordinateInvalid': 'Please enter valid numeric coordinates.',
+  'form.invalidDate': 'Please enter a valid calendar date and time.',
+  'form.timezoneDefault': 'Inferred time zone:',
+  'form.timezoneAutoDetectFailed': 'The time zone could not be inferred from the current coordinates. Please check the coordinates.',
+  'form.dstActive': 'Daylight saving time (DST) in effect',
+  'form.advanced': 'Advanced Settings',
+  'form.jasiMethod': 'Ja-si Method (子時法)',
+  'form.unified': 'Unified Ja-si',
+  'form.split': 'Split Ja-si (Night)',
+  'form.unifiedDesc': 'From 23:30, it is 子 hour, and the day pillar advances to the next day.',
+  'form.splitDesc': '23:30–00:00 (night Ja-si) is 子 hour, but the day pillar remains on the current day.',
+  'form.calculate': 'Calculate',
+  'form.saveAndCalculate': 'Save and Calculate',
+  'form.privacy1': 'All calculations are processed in your browser.',
+  'form.privacy2': 'Your information is never sent to any server.',
+
+  // SubjectHeader
+  'subject.unsaved': 'Unsaved Chart',
+  'subject.edit': 'Edit',
+
+  // CopyButton
+  'copy.failed': 'Copy failed · Retry',
+  'copy.copy': 'Copy',
+  'copy.copied': 'Copied ✓',
+  'copy.aiCopy': 'Copy for AI Reading',
+
+  // AI text export
+  'export.timeKst': 'Time basis: normalized KST (UTC+09:00) wall clock; historical offsets and DST corrected',
+  'export.timeSolar': 'Time basis: IANA local time → UTC → true solar time using longitude and equation of time',
+  'export.timeUnspecified': 'Time basis: original timezone not provided',
+  'export.sajuCalendar': 'Calculation basis: 年柱 changes at 立春; 月柱 changes at astronomical solar-term entry',
+  'export.sajuUnified': '子時法: unified — 子時 starts at {start}; 日柱 advances to the next day',
+  'export.sajuSplit': '子時法: split — 子時 starts at {start}; before 00:00, 日柱 stays on the same day and 時干 uses the next day',
+  'export.sajuAge': '大運 displayed age: start year − adjusted birth year (not birthday-based age)',
+  'export.ziweiCalendar': 'Calculation basis: lunar calendar (lunar-javascript); 年柱 and 流年 change at Lunar New Year',
+  'export.ziweiTime': '子時: 23:00–01:00; at 23:00 in the adjusted clock, the lunar date stays on the same day',
+  'export.ziweiLeap': '閏月: treated as the corresponding regular month (no half-month split)',
+  'export.ziweiAge': '大限 / 流年 age: nominal age = reference lunar year − birth lunar year + 1',
+  'export.ziweiFlowYear': 'Period: Lunar New Year of the stated year through the day before the next Lunar New Year',
+  'export.ziweiMonths': '流月 (lunar months 1–12 · 斗君-based 命宮 position summary)',
+  'export.natalBasis': 'Calculation basis: tropical zodiac · geocentric positions · mean lunar node',
+  'export.natalTime': 'Time basis: IANA local time → UTC (historical offsets and DST applied)',
+  'export.natalHouses': 'Houses: {system}; cusp start inclusive, next cusp exclusive',
+
+  // ThemeToggle
+  'theme.system': 'Follow System',
+  'theme.light': 'Light Mode',
+  'theme.dark': 'Dark Mode',
+
+  // LanguageMenu
+  'lang.select': 'Select language',
+
+  // Date formats ({m} = month, {d} = day)
+  'date.monthDay': '{m}/{d}',
+
+  // CityCombobox
+  'city.noResults': 'No results found',
+  'city.korea': 'Korea',
+  'city.world': 'World',
+  'city.placeholder': 'Enter a city name',
+
+  // Guide
+  'guide.title': 'How to Use',
+  'guide.step1': 'Enter the date, time and place of birth and the gender, then calculate.',
+  'guide.step2': 'Read the results in the Saju, Ziwei Doushu and Natal Chart tabs.',
+  'guide.step3': '{copyAll} copies all three at once. The {copy} button in each tab copies one of them.',
+  'guide.step4': 'Paste it into an AI chat like Claude, ChatGPT, or Gemini, and ask for an interpretation.',
+  'guide.askAI': 'Try asking AI like this',
+  'guide.personality': 'Personality Analysis',
+  'guide.personalityEx': 'Here are my Saju, Ziwei Doushu chart, and Natal Chart. Please analyze my personality strengths and weaknesses.',
+  'guide.pasteData': '[Paste copied data here]',
+  'guide.counseling': 'Life Advice',
+  'guide.counselingEx': 'Based on the chart data below, list the top 3 challenges I may face in life and give me advice.',
+  'guide.compatibility': 'Compatibility Reading',
+  'guide.compatibilityEx': "I'll send two people's chart data. Please analyze the compatible aspects and potential areas of conflict.",
+  'guide.pasteA': "[Paste A's data here]",
+  'guide.pasteB': "[Paste B's data here]",
+
+  // ProfileModal
+  'profile.timeUnknown': 'Time unknown',
+  'profile.male': 'M',
+  'profile.female': 'F',
+  'profile.ilju': 'Day Pillar',
+  'profile.listTitle': 'Profiles',
+  'profile.reorder': 'Reorder {name}',
+  'profile.moveUp': 'Move up',
+  'profile.moveDown': 'Move down',
+  'profile.moved': '{name} moved to position {n} in the list.',
+  'profile.new': 'New',
+  'profile.search': 'Find by name',
+  'profile.searchEmpty': 'No profile with that name.',
+  'profile.emptyHint': 'No saved profiles yet. Save a chart with a name and it will be listed here.',
+  'profile.storageNote': 'Profiles are kept in this browser only. Export them to make a backup.',
+  'profile.close': 'Close',
+  'profile.export': 'Export',
+  'profile.import': 'Import',
+  'profile.imported': 'Profiles imported: {n}',
+  'profile.importedNone': 'Nothing new to import.',
+  'profile.namePlaceholder': 'Enter nickname',
+  'profile.save': 'Save',
+  'profile.cancel': 'Cancel',
+  'profile.delete': 'Delete Profile',
+  'profile.deleteConfirm': 'Delete this profile?',
+  'profile.deleteYes': 'Delete',
+  'profile.storageError': 'Storage is full. Please delete unnecessary profiles.',
+  'profile.importError': 'Unable to read the file. Please check that it is a valid JSON file.',
+
+  // Saju - PillarTable
+  'saju.sipsin': '十神',
+  'saju.cheongan': '天干',
+  'saju.jiji': '地支',
+  'saju.unseong': '運星',
+  'saju.sinsal': '神殺',
+  'saju.janggan': '藏干',
+  'saju.gongmang': '空亡',
+
+  // Saju - DaewoonTable
+  'saju.noData': 'No major cycle (大運) data available.',
+  'saju.daewoonHint': 'Select a luck period to see its years below.',
+  'saju.unknownTimeWarning': 'Calculated based on noon (12:00) without birth time. The start of major cycles may have an error of several months.',
+  'saju.ageSuffix': '',
+
+  // Saju - SinsalList
+  'saju.sal.cheonul': 'Heavenly Noble (天乙貴人)',
+  'saju.sal.cheonduk': 'Heavenly Virtue (天德貴人)',
+  'saju.sal.wolduk': 'Monthly Virtue (月德貴人)',
+  'saju.sal.munchang': 'Literary Star (文昌貴人)',
+  'saju.sal.geumyeo': 'Golden Carriage (金輿祿)',
+  'saju.sal.yangin': 'Blade Star (羊刃殺)',
+  'saju.sal.dohwa': 'Peach Blossom (桃花殺)',
+  'saju.sal.baekho': 'White Tiger (白虎殺)',
+  'saju.sal.goegang': 'Chief Star (魁罡殺)',
+  'saju.sal.hongyeom': 'Red Beauty (紅艶殺)',
+
+  // Saju - TransitView
+  'saju.transit.past': 'Past',
+  'saju.transit.future': 'Upcoming',
+  'saju.transit.futureBtn': 'Future',
+  'saju.transit.pastBtn': 'Past',
+  'saju.transit.1month': '1 month',
+  'saju.transit.3months': '3 months',
+  'saju.transit.6months': '6 months',
+  'saju.transit.noRelation': ' months with no notable interactions',
+
+  // Saju - Transit relation prefix
+  'transit.stem': '天干',
+  'transit.branch': '地支',
+
+  // Saju - JwabeopChart
+  'saju.jwabeop.desc': 'Which cycle star each pillar\'s hidden stems are seated (坐) at in the day branch',
+
+  // Saju - InjongbeopChart
+  'saju.injong.jijanggan': 'Hidden Stems',
+  'saju.injong.desc': '— Yang stem seeding for missing Ten Gods',
+
+  // Ziwei
+  'ziwei.lunarYear': '流年 (lunar year)',
+  'ziwei.needTime': 'Ziwei Doushu requires the time of birth.',
+  'ziwei.needTimeDesc': 'The entire chart structure changes based on birth time. Please enter your time of birth.',
+
+  // Natal
+  'natal.houseSystemFallback': 'The selected house system is unavailable here. Showing {system} houses.',
+  'natal.loading': 'Calculating natal chart...',
+  'natal.error': 'Calculation Error',
+  'natal.unknownTime': 'Calculated based on noon (12:00) without birth time.',
+  'natal.unknownTimeDetail': 'The Moon may have up to ±6° error, and ASC / house placements are not displayed.',
+  'natal.planet': 'Planet',
+  'natal.sign': 'Sign',
+  'natal.degree': 'Degree',
+  'natal.house': 'House',
+  'natal.planets': 'Planets',
+  'natal.angles': 'Angles',
+  'natal.houses': 'Houses',
+  'natal.aspects': 'Major Aspects',
+  'natal.houseSystem': 'House system',
+  'natal.wheelDescription': 'The outer ring shows zodiac signs and degrees. The numbered ring shows houses. R marks a retrograde planet. Lines in the centre connect planets in aspect.',
+  'natal.aspectKey': 'Show aspects by type',
+  'natal.retrograde': 'Retrograde',
+  'natal.enlargeWheel': 'Enlarge chart',
+  'natal.fitWheel': 'Fit chart to screen',
+
+  'aspect.conjunction': 'Conjunction',
+  'aspect.sextile': 'Sextile',
+  'aspect.square': 'Square',
+  'aspect.trine': 'Trine',
+  'aspect.opposition': 'Opposition',
+
+  // Natal - Planets
+  'planet.Sun': 'Sun', 'planet.Moon': 'Moon', 'planet.Mercury': 'Mercury', 'planet.Venus': 'Venus',
+  'planet.Mars': 'Mars', 'planet.Jupiter': 'Jupiter', 'planet.Saturn': 'Saturn', 'planet.Uranus': 'Uranus',
+  'planet.Neptune': 'Neptune', 'planet.Pluto': 'Pluto', 'planet.Chiron': 'Chiron',
+  'planet.NorthNode': 'North Node', 'planet.SouthNode': 'South Node', 'planet.Fortuna': 'Fortuna',
+
+  // Natal - Zodiac Signs
+  'zodiac.Aries': 'Aries', 'zodiac.Taurus': 'Taurus', 'zodiac.Gemini': 'Gemini', 'zodiac.Cancer': 'Cancer',
+  'zodiac.Leo': 'Leo', 'zodiac.Virgo': 'Virgo', 'zodiac.Libra': 'Libra', 'zodiac.Scorpio': 'Scorpio',
+  'zodiac.Sagittarius': 'Sagittarius', 'zodiac.Capricorn': 'Capricorn', 'zodiac.Aquarius': 'Aquarius', 'zodiac.Pisces': 'Pisces',
+
+  // Natal - Zodiac Signs (short, for mobile)
+  'zodiac.short.Aries': 'Ari', 'zodiac.short.Taurus': 'Tau', 'zodiac.short.Gemini': 'Gem', 'zodiac.short.Cancer': 'Can',
+  'zodiac.short.Leo': 'Leo', 'zodiac.short.Virgo': 'Vir', 'zodiac.short.Libra': 'Lib', 'zodiac.short.Scorpio': 'Sco',
+  'zodiac.short.Sagittarius': 'Sag', 'zodiac.short.Capricorn': 'Cap', 'zodiac.short.Aquarius': 'Aqu', 'zodiac.short.Pisces': 'Pis',
+}
+
+export default en
